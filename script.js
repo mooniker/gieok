@@ -1,162 +1,122 @@
-// <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-// 	<div class="flipper">
-// 		<div class="front">
-// 			<!-- front content -->
-// 		</div>
-// 		<div class="back">
-// 			<!-- back content -->
-// 		</div>
-// 	</div>
-// </div>
+
+
+var game = {
+
+  table: "div#table",
+
+  flip_count: 0,
+
+  suits: {
+    d: "diamonds",
+    s: "spades",
+    c: "clubs",
+    h: "hearts",
+  },
+
+  last_card_clicked: null,
+
+  matched: [],
+
+  cards_in_deck: [],
+
+  cards_on_table: [],
+
+  createCard: function (rank, suit) {
+    return "<div class='card-on-table'><div class='flippable-card'>" +
+    "<figure class='card card-facedown card-" + this.suits[suit] + " card-" +
+    rank + "'><span></span></figure>" + "<figure class='card card-faceup card-" +
+    this.suits[suit] + " card-" + rank + "'><span>" + rank + "</span></figure>" +
+    "</div></div>";
+  },
+
+  createSuit: function ( suit ) {
+    var cards = [];
+    cards.push(["a", suit]);
+    for ( var i = 2; i <= 10; i++ ) {
+      cards.push([i, suit]);
+    }
+    cards.push(["j", suit]);
+    cards.push(["q", suit]);
+    cards.push(["k", suit]);
+    return cards;
+  },
+
+  shuffle: function () { // need to find better code
+    for(var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
+  },
+
+  draw_card: function () {
+    return this.cards_in_deck.pop();
+  },
+
+  refresh: function () {
+    console.log("Refreshed.");
+    console.log("Matched so far:", this.matched);
+    var game = this;
+    console.log("Matched so far:", this.matched, "game.matched:", game.matched);
+    $(".flipped").each( function () {
+      console.log("Matched so far:", game.matched);
+      if ( game.matched.indexOf($(this).text()) == -1 ) {
+        $(this).toggleClass("flipped");
+      }
+    });
+  },
+
+  start: function () {
+
+    // create and shuffle deck
+    // this.cards_in_deck = this.createSuit("h");
+    // this.cards_in_deck = this.cards_in_deck.concat(this.createSuit("d"));
+    // this.cards_in_deck = this.cards_in_deck.concat(this.createSuit("c"));
+    // this.cards_in_deck = this.cards_in_deck.concat(this.createSuit("s"));
+    var hearts = this.createSuit("h");
+    hearts.pop();
+    var clubs = this.createSuit("c");
+    clubs.pop();
+    this.cards_in_deck = hearts.concat(clubs);
+
+    console.log("Matched so far:", this.matched);
+
+    var deck = "";
+    for ( var d = 0; d < this.cards_in_deck.length; d++ ) {
+      deck += this.cards_in_deck[d][0] + this.cards_in_deck[d][1] + " ";
+    }
+    console.log("Deck created:", deck);
+    //this.shuffle();
+
+    // put cards on the table
+    for (var i = 0; i < 24; i++ ) {
+      var drawn_card = this.draw_card();
+      $(this.table).append(this.createCard(drawn_card[0], drawn_card[1]));
+    }
+
+
+    // make all cards flippable
+    var game = this;
+    $(this.table).on("click", function (e) {
+      if ( $(e.target).parent().parent().hasClass("flipped") ) {
+        // do nothing because it's already flipped
+      } else if ( game.last_card_clicked ) { // we already have a card clicked
+        $(e.target).parent().parent().toggleClass("flipped");
+        console.log("Does", $(e.target).parent().parent().text(), "match with", game.last_card_clicked + "?");
+        if ( $(e.target).parent().parent().text() == game.last_card_clicked ) {
+          alert("match!");
+          game.matched.push(game.last_card_clicked);
+        }
+        game.last_card_clicked = null;
+        setTimeout(game.refresh.bind(game), 3000);
+      } else { // this is a fresh try
+        $(e.target).parent().parent().toggleClass("flipped");
+        // alert($(e.target).parent().parent().text());
+        game.last_card_clicked = $(e.target).parent().parent().text();
+        console.log("Clicked on:", game.last_card_clicked);
+        //$(e.target).parent().parent().toggleClass("flipped");
+      }
+    });
+
+  }
+};
 
 $(document).ready(function() {
-
-
-  var game = {
-
-    board: "div#board",
-    decks: {
-      test: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-    },
-
-    start: function () {
-
-      $(".card").each(function () {
-        $(this).on("click", function (e) {
-          $(this).toggleClass("flipped");
-        });
-      });
-      // pass
-      // for ( var i = 0; i < 9; i += 1 ) {
-      //   $(this.board).append("<div class='flip-container' ontouchstart='this.classList.toggle('hover');'><div class='card flipper'><div class='front'></div><div class='back'"+ this.decks.test[i] + "</div></div></div></div>");
-      // }
-
-      // flip all the cards
-
-
-    }
-  };
-
   game.start();
-
-
-  //   currentPlayerIsX: true,
-  //
-  //   inPlay: true,
-  //
-  //   xPlayerIsHuman: true,
-  //
-  //   oPlayerIsHuman: true,
-  //
-  //   reset: function () {
-  //     $("td").each( function () {
-  //       $(this).text("");
-  //     });
-  //   },
-  //
-  //   // turnDone: function () {
-  //   //   // check for winner, lets load up the data in an array
-  //   //   var board = [];
-  //   //   $("tr").each( function (i) {
-  //   //     var cells = [];
-  //   //     $(this).children().each( function (i) {
-  //   //       var cell = $(this).text();
-  //   //       if (cell) {
-  //   //         cells.push( cell == "X" );
-  //   //       } else {
-  //   //         cells.push(null);
-  //   //       }
-  //   //     });
-  //   //     board.push(cells);
-  //   //   });
-  //   //   // first check horizontals
-  //   //   for ( var row in board ) {
-  //   //     var winner = "X";
-  //   //     if ( )
-  //   //   }
-  //   //   // next check verticals
-  //   //   // finally check diagonals
-  //   //   this.currentPlayerIsX = !this.currentPlayerIsX;
-  //   // },
-  //
-  //   onEndOfTurn: function () {
-  //     // if winner
-  //     var winner = this.hasWinner();
-  //     if ( winner === null ) { // no winner
-  //       console.log("no winner yet.");
-  //       this.currentPlayerIsX = !this.currentPlayerIsX;
-  //     //   change currentPlayer
-  //     //   if new current player is human do human stuff
-  //     //   else do computer stuff
-  //     }
-  //     else { // we have winner
-  //       // change display/ui to say winner
-  //       console.log("winner is", winner);
-  //       // stop game play
-  //     }
-  //   },
-  //
-  //   findShowWinningRow: function ( jq_obj ) {
-  //     var string_seq = jq_obj.text().trim();
-  //     if ( string_seq == "XXX" || string_seq == "OOO" ) {
-  //       jq_obj.attr("class", "win"); // side effect: styling
-  //       this.inPlay = false;
-  //       return string_seq == "XXX" ? "X" : "O"; // winner
-  //     }
-  //     return null; // no winner
-  //   },
-  //
-  //   checkRow: function ( index ) {
-  //     return this.findShowWinningRow($("#board tr").eq(index));
-  //     // do some styling if win found
-  //   },
-  //
-  //   checkColumn: function ( index ) {
-  //     return this.findShowWinningRow($("#board tr > td:nth-child(" + index + ")"));
-  //     // do some styling if win found
-  //   },
-  //
-  //   checkDiagonals: function () {
-  //     //pass
-  //   },
-  //
-  //   hasWinner: function () {
-  //     for ( var i = 0; i < $("#board tr").length; i++ ) {
-  //       if ( this.checkRow(i) !== null ) {
-  //         return this.checkRow(i);
-  //       }
-  //     } // horizontal rows checked
-  //     for ( var j = 0; j < $("#board tr").eq(0).children().length; j++ ) {
-  //       if ( this.checkColumn(j) !== null ) {
-  //         return this.checkColumn(j);
-  //       }
-  //     } // vertical columns checked
-  //     // diagonals should be checked here
-  //     return null;
-  //   },
-  //
-  //   start: function () {
-  //     var game = this;
-  //
-  //     $("#reset").on("click", function (e) {
-  //       e.preventDefault();
-  //       game.reset();
-  //     });
-  //
-  //     $("td").each( function () { // listen to each spot for click events
-  //       $(this).on("click", function (e) {
-  //         e.preventDefault();
-  //         if ( game.inPlay ) {
-  //           if ( $(this).text() ) { // if there is text
-  //             console.log("Nope. Try another spot.");
-  //           } else {
-  //             $(this).text( game.currentPlayerIsX ? "X" : "O" );
-  //           }
-  //           game.onEndOfTurn();
-  //         }
-  //       });
-  //     });
-  //   }
-  // };
-
 });
