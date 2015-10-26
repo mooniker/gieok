@@ -20,6 +20,12 @@ $(document).ready(function() {
     },
 
     start: function () {
+
+      $(".card").each(function () {
+        $(this).on("click", function (e) {
+          $(this).toggleClass("flipped");
+        });
+      });
       // pass
       // for ( var i = 0; i < 9; i += 1 ) {
       //   $(this.board).append("<div class='flip-container' ontouchstart='this.classList.toggle('hover');'><div class='card flipper'><div class='front'></div><div class='back'"+ this.decks.test[i] + "</div></div></div></div>");
