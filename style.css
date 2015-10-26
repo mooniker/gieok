@@ -1,0 +1,67 @@
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+@import url(https://fonts.googleapis.com/css?family=Crafty+Girls);
+
+body {
+  background: white;
+  text-align: center;
+}
+#board {
+  margin: auto;
+  background: red;
+  width: 600px;
+  font-size: 140%;
+  font-family: 'Crafty Girls', script, cursive;
+}
+
+/* entire container, keeps perspective */
+.flip-container {
+	perspective: 1000;
+  background: yellow;
+}
+	/* flip the pane when hovered */
+	.flip-container:hover .flipper, .flip-container.hover .flipper {
+		transform: rotateY(180deg);
+	}
+
+.flip-container, .front, .back {
+  width: 100px;
+  height: 100px;
+	/*width: 320px;
+	height: 480px;*/
+  padding: 10px;
+  float: left;
+  vertical-align: middle;
+}
+
+/* flip speed goes here */
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+
+	position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	backface-visibility: hidden;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+  padding: 1px;
+}
+
+/* front pane, placed above back */
+.front {
+	z-index: 2;
+	/* for firefox 31 */
+	transform: rotateY(0deg);
+  background: green;
+  border: 1px solid black;
+}
+
+/* back, initially hidden pane */
+.back {
+	transform: rotateY(180deg);
+  background: cyan;
+}
