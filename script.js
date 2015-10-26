@@ -13,19 +13,25 @@ var game = {
     h: "hearts",
   },
 
-  last_card_clicked: null,
+  last_card_clicked: [],
+
+  click_history: [],
 
   matched: [],
+
+  temporarily_visible: [],
 
   cards_in_deck: [],
 
   cards_on_table: [],
 
-  createCard: function (rank, suit) {
-    return "<div class='card-on-table'><div class='flippable-card'>" +
-    "<figure class='card card-facedown card-" + this.suits[suit] + " card-" +
-    rank + "'><span></span></figure>" + "<figure class='card card-faceup card-" +
-    this.suits[suit] + " card-" + rank + "'><span>" + rank + "</span></figure>" +
+  speed: 3000,
+
+  createCard: function ( rank, suit ) {
+    return "<div class=\"card-on-table\"><div class=\"flippable-card\">" +
+    "<figure class=\"card card-facedown card-" + this.suits[suit] + " card-" +
+    rank + "\"><span></span></figure>" + "<figure class=\"card card-faceup card-" +
+    this.suits[suit] + " card-" + rank + "\"><span>" + rank + "</span></figure>" +
     "</div></div>";
   },
 
@@ -42,24 +48,39 @@ var game = {
   },
 
   shuffle: function () { // need to find better code
-    for(var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
+    for (var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
   },
 
   draw_card: function () {
     return this.cards_in_deck.pop();
   },
 
-  refresh: function () {
-    console.log("Refreshed.");
-    console.log("Matched so far:", this.matched);
+  update: function () {
+    $("#matches-so-far").text("Matches so far:", this.matched.length, this.matches);
+    $("#misses-so-far").text("Misses:", this.last_card_clicked.length, this.last_card_clicked);
+    console.log("Matched so far:", this.matched, "Misses so far:", this.last_card_clicked);
+    this.last_card_clicked.push();
+    this.last_card_clicked.push();
     var game = this;
-    console.log("Matched so far:", this.matched, "game.matched:", game.matched);
     $(".flipped").each( function () {
-      console.log("Matched so far:", game.matched);
       if ( game.matched.indexOf($(this).text()) == -1 ) {
         $(this).toggleClass("flipped");
       }
     });
+  },
+
+  flip_back: function ( flip_container ) {
+    // flip back if not matched
+    var game = this;
+    setTimeout( function () {
+      if ( game.matched.indexOf(this.text()) == -1  && this.hasClass("flipped")) {
+        this.toggleClass("flipped");
+      } // else { do nothing }
+    }.bind( flip_container ), this.speed);
+  },
+
+  show_match: function () {
+
   },
 
   start: function () {
@@ -94,23 +115,30 @@ var game = {
     // make all cards flippable
     var game = this;
     $(this.table).on("click", function (e) {
-      if ( $(e.target).parent().parent().hasClass("flipped") ) {
+      var flip_container = $(e.target).parent().parent();
+      if ( flip_container.hasClass("flipped") ) {
         // do nothing because it's already flipped
-      } else if ( game.last_card_clicked ) { // we already have a card clicked
-        $(e.target).parent().parent().toggleClass("flipped");
-        console.log("Does", $(e.target).parent().parent().text(), "match with", game.last_card_clicked + "?");
-        if ( $(e.target).parent().parent().text() == game.last_card_clicked ) {
-          alert("match!");
-          game.matched.push(game.last_card_clicked);
+      } else if ( game.last_card_clicked.length > 0 ) { // we already have a card clicked
+        flip_container.toggleClass("flipped");
+        var this_card = flip_container.text();
+        console.log("Does", this_card, "match with", game.last_card_clicked[0] + "?");
+        if ( this_card == game.last_card_clicked[0] && game.last_card_clicked.length % 2 === 0 ) {
+          console.log("Yes!");
+          game.show_match(this_card);
+          game.matched.push(game.last_card_clicked.shift());
+        } else {
+          console.log("No.");
+          console.log("Clicked on:", game.last_card_clicked);
+          game.last_card_clicked.unshift(this_card);
+          if ( game.last_card_clicked.length % 2 === 0 ) {
+            setTimeout(game.update.bind(game), 3000);
+            //game.flip_back(flip_container);
+          }
         }
-        game.last_card_clicked = null;
-        setTimeout(game.refresh.bind(game), 3000);
-      } else { // this is a fresh try
-        $(e.target).parent().parent().toggleClass("flipped");
-        // alert($(e.target).parent().parent().text());
-        game.last_card_clicked = $(e.target).parent().parent().text();
+      } else { // this is a fresh attempt at pairing
+        flip_container.toggleClass("flipped");
+        game.last_card_clicked.unshift(flip_container.text());
         console.log("Clicked on:", game.last_card_clicked);
-        //$(e.target).parent().parent().toggleClass("flipped");
       }
     });
 

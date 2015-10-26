@@ -13,9 +13,19 @@ body {
   /*font-family: 'Crafty Girls', script, cursive;*/
 }
 
+nav {
+  display: inline;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+nav ul {
+  list-style: none;
+}
+
 .card-on-table {
   width: 100px;
-  height: 124px;
+  height: 140px;
   position: relative;
   perspective: 800px;
   display: inline-block;
