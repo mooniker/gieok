@@ -11,6 +11,54 @@ h1, dl, button{
   text-transform: uppercase;
   font-size: 180%;
 }
+
+.notClickable:hover {
+  cursor: no-drop;
+}
+#stopwatch {
+  cursor: wait;
+}
+
+nav {
+  display: inline;
+  position: fixed;
+  width: 8em;
+  top: 1em;
+  right: 0;
+  padding: 1em;
+}
+nav button {
+  position: absolute;
+}
+button:hover, .flippable-card:hover {
+  cursor: pointer; cursor: hand;
+}
+button {
+  border-radius: .4em;
+}
+button:hover {
+  color: darkgreen;
+}
+
+button:focus {
+  outline: none;
+}
+.flipped:hover {
+  cursor: no-drop;
+}
+nav ul {
+  list-style: none;
+  position: relative;
+  display: block;
+  top: 10em;
+}
+dl {
+  margin: auto;
+}
+dd, dt {
+  display: block;
+  margin: auto;
+}
 dd {
   font-size: 240%;
 }
@@ -27,23 +75,11 @@ dt {
   /*font-family: 'Crafty Girls', script, cursive;*/
 }
 
-nav {
-  display: inline;
-  position: fixed;
-  width: 8em;
-  top: 0;
-  right: 0;
-  padding: 1em;
-}
-nav ul {
-  list-style: none;
-}
-
 .card-on-table {
   width: 5em; /* 100px; */
   height: 6.7em; /* 140px; */
   position: relative;
-  xperspective: 800px;
+  perspective: 1000;
   display: inline-block;
 }
 

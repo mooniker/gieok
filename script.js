@@ -17,6 +17,8 @@ var game = {
 
   is_active: false,
 
+  name: "Memory Game",
+
   last_card_clicked: [],
 
   click_history: [],
@@ -57,36 +59,11 @@ var game = {
   },
 
   shuffle: function () { // need to find better code
-    for (var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
+    for ( var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
   },
 
   draw_card: function () {
     return this.cards_in_deck.pop();
-  },
-
-  update: function () {
-    $("#matches-so-far").text("Matches so far:", this.matched.length, this.matches);
-    $("#misses-so-far").text("Misses:", this.last_card_clicked.length, this.last_card_clicked);
-    console.log("Matched so far:", this.matched, "Misses so far:", this.last_card_clicked);
-    this.last_card_clicked.push();
-    this.last_card_clicked.push();
-    var game = this;
-    $(".flipped").each( function () {
-      if ( game.matched.indexOf($(this).text()) == -1 ) {
-        $(this).toggleClass("flipped");
-      }
-    });
-    console.log("Board refreshed.");
-  },
-
-  refresh: function () {
-    var game = this;
-    $(".flipped").each( function () {
-      if ( game.matched.indexOf($(this).text()) == -1 ) {
-        $(this).toggleClass("flipped");
-      }
-    });
-    console.log("Board refreshed.");
   },
 
   unflip: function () {
@@ -162,7 +139,7 @@ var game = {
       deck += this.cards_in_deck[d][0] + this.cards_in_deck[d][1] + " ";
     }
     console.log("Deck created:", deck);
-    //this.shuffle(); // Shuffle deck
+    this.shuffle(); // Shuffle deck
 
     // put cards on the table
     for (var i = 0; i < 24; i++ ) {
@@ -175,6 +152,7 @@ var game = {
     // Attach click listener to start/stop/reset button
 
     $("button").on("click", function (e) {
+      e.preventDefault();
       console.log("Active game:", game.is_active);
       if ( game.is_active ) { // if game is active, let's stop it
         $(e.target).text("Try Again?");
@@ -195,6 +173,7 @@ var game = {
     // Attach click listeners to cards
 
     $(this.table).on("click", function (e) {
+      e.preventDefault();
       var flip_container = $(e.target).parent().parent();
 
       if ( !game.is_active ) { // if game not active, clicks not registered
@@ -204,11 +183,11 @@ var game = {
         var this_card = flip_container.text(); // we'll need this a lot
         game.click_history.push(this_card); // add this just clicked card to history
         flip_container.toggleClass("flipped"); // flip the card
-        $("h1").text(game.get_click_history()); // output to debug
+        //$("h1").text(game.get_click_history()); // output to debug
         console.log("Just clicked on", this_card, "card. (Click #" + game.click_history.length + ")" );
 
         if ( game.click_history.length % 2 === 0 ) {
-          console.log("click_history.length % 2:", game.click_history.length % 2);
+          //console.log("click_history.length % 2:", game.click_history.length % 2);
           // Not the first click in an attempted pairing
           var last_letter = game.click_history[game.click_history.length - 1];
           var last_last_letter = game.click_history[game.click_history.length - 2];
