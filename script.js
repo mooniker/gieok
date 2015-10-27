@@ -115,9 +115,13 @@ var game = {
     if ( and_play ) {
       this.is_active = true;
       game.timerId = setInterval(this.increment_time.bind(this), 1000);
-      $("button").text("Give Up?"); // change button to reflect game now in play
+      $("#button").css("width", "3em");
+      $("#button").text("Give Up?"); // change button to reflect game now in play
+      $("#button").css("width", "auto");
     } else {
-      $("button").text("Begin?"); // change button to reflect game now in play
+      $("#button").css("width", "3em");
+      $("#button").text("Begin?"); // change button to reflect game now in play
+      $("#button").css("width", "auto");
     }
   },
 
@@ -178,7 +182,9 @@ var game = {
 
       if ( !game.is_active ) { // if game not active, clicks not registered
         console.log("Game not active.");
-        confirm( "Begin?" ) ? game.reset(true) : null;
+        if ( confirm( "Begin?" ) ) {
+          game.reset(true);
+        }
       } else if ( !flip_container.hasClass("flipped") ) {
         // Only do stuff if click is validly on unflipped card
         var this_card = flip_container.text(); // we'll need this a lot

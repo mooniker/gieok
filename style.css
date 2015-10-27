@@ -35,6 +35,9 @@ button:hover, .flippable-card:hover {
 }
 button {
   border-radius: .4em;
+  box-shadow: 0.04em 0.04em 0.04em 0.04em rgba(20, 20, 20, 0.4);
+  -webkit-transition: width 4s, height 4s, background-color 4s, -webkit-transform 4s;
+  transition: width 4s, height 4s, background-color 4s, transform 4s;
 }
 button:hover {
   color: darkgreen;
@@ -68,7 +71,7 @@ dt {
 }
 #table {
   margin: 0 auto;
-  padding: 1em .2em;
+  xpadding: .2em .2em;
   background: green;
   width: 640px;
   font-size: 120%;
@@ -81,6 +84,7 @@ dt {
   position: relative;
   perspective: 1000;
   display: inline-block;
+  margin: .2em;
 }
 
 .flippable-card {
