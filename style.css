@@ -5,6 +5,19 @@ body {
   background: green;
   text-align: center;
 }
+
+h1, dl, button{
+  font-family: 'Montserrat', script, cursive;
+  text-transform: uppercase;
+  font-size: 180%;
+}
+dd {
+  font-size: 240%;
+}
+dt {
+  text-transform: lowercase;
+  font-size: 60%;
+}
 #table {
   margin: 0 auto;
   padding: 1em .2em;
@@ -17,8 +30,10 @@ body {
 nav {
   display: inline;
   position: fixed;
+  width: 8em;
   top: 0;
   right: 0;
+  padding: 1em;
 }
 nav ul {
   list-style: none;

@@ -15,7 +15,7 @@ var game = {
 
   timer: null,
 
-  is_active: true,
+  is_active: false,
 
   last_card_clicked: [],
 
@@ -34,6 +34,8 @@ var game = {
   speed: 3000,
 
   timerId: null,
+
+  stopwatch: 0,
 
   createCard: function ( rank, suit ) {
     return "<div class=\"card-on-table\"><div class=\"flippable-card\">" +
@@ -117,6 +119,31 @@ var game = {
     return output;
   },
 
+  update_stats: function () {
+    $("#stopwatch").text(this.stopwatch.toString());
+    $("#matches").text(this.matched.length);
+    $("#misses").text(Math.floor(this.click_history.length / 2) - this.matched.length);
+  },
+
+  increment_time: function () {
+    this.stopwatch += 1;
+    this.update_stats();
+  },
+
+  reset: function ( and_play ) {
+    $(".flipped").toggleClass("flipped");
+    this.matched = [];
+    this.click_history = [];
+    this.update_stats();
+    if ( and_play ) {
+      this.is_active = true;
+      game.timerId = setInterval(this.increment_time.bind(this), 1000);
+      $("button").text("Give Up?"); // change button to reflect game now in play
+    } else {
+      $("button").text("Begin?"); // change button to reflect game now in play
+    }
+  },
+
   start: function () {
 
     // create and shuffle deck
@@ -143,14 +170,35 @@ var game = {
       $(this.table).append(this.createCard(drawn_card[0], drawn_card[1]));
     }
 
+    var game = this; // for the thisiness in the callbacks
+
+    // Attach click listener to start/stop/reset button
+
+    $("button").on("click", function (e) {
+      console.log("Active game:", game.is_active);
+      if ( game.is_active ) { // if game is active, let's stop it
+        $(e.target).text("Try Again?");
+        game.is_active = false;
+        game.timerId = clearInterval(game.timerId);
+        game.stopwatch = 0;
+      } else { // if game is not active, activate it
+        $(e.target).text("Give Up?"); // change button to reflect game now in play
+        //game.is_active = true;
+        //game.update_stats();
+        //game.timerId = setInterval(game.increment_time.bind(game), 1000);
+        game.reset(true);
+      }
+      console.log("Game now active:", game.is_active);
+
+    });
+
     // Attach click listeners to cards
-    var game = this;
+
     $(this.table).on("click", function (e) {
-      console.log("Click history:", game.click_history);
       var flip_container = $(e.target).parent().parent();
 
-      if ( false ) { // if game not active, clicks not registered
-        // game over code goes here
+      if ( !game.is_active ) { // if game not active, clicks not registered
+        console.log("Game not active.");
       } else if ( !flip_container.hasClass("flipped") ) {
         // Only do stuff if click is validly on unflipped card
         var this_card = flip_container.text(); // we'll need this a lot
@@ -178,39 +226,7 @@ var game = {
 
         }
       }
-
-      // if ( flip_container.hasClass("flipped") ) {
-      //   // do nothing because it's already flipped
-      //   // All other scenarios assume that the card clicked is not flipped
-      // } else if ( game.last_card_clicked.length > 0 ) {
-      //   // we already have a card clicked in a pairing attempt or multiples
-      //   flip_container.toggleClass("flipped");
-      //   var this_card = flip_container.text();
-      //   game.click_history.push(this_card);
-      //   console.log("Does", this_card, "match with", game.last_card_clicked[0] + "?");
-      //
-      //   if ( this_card == game.last_card_clicked[0] && game.last_card_clicked.length % 2 === 0 ) {
-      //     console.log("Yes!");
-      //     game.show_match(this_card);
-      //     game.matched.push(game.last_card_clicked.shift());
-      //   } else {
-      //     console.log("No.");
-      //     console.log("Clicked on:", game.last_card_clicked);
-      //     game.last_card_clicked.unshift(this_card);
-      //     if ( game.last_card_clicked.length % 2 === 0 ) {
-      //       setTimeout(game.update.bind(game), 3000);
-      //       //game.flip_back(flip_container);
-      //     }
-      //   }
-      // } else { // this is a fresh attempt at pairing
-      //   flip_container.toggleClass("flipped");
-      //   game.last_card_clicked.unshift(flip_container.text());
-      //   game.click_history.push(flip_container.text());
-      //   console.log("Clicked on:", game.last_card_clicked);
-      // }
-      // $("h1").text(game.click_history);
     });
-    //setInterval(this.refresh.bind(this), 1000);
   }
 };
 
