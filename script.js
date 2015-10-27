@@ -178,6 +178,7 @@ var game = {
 
       if ( !game.is_active ) { // if game not active, clicks not registered
         console.log("Game not active.");
+        confirm( "Begin?" ) ? game.reset(true) : null;
       } else if ( !flip_container.hasClass("flipped") ) {
         // Only do stuff if click is validly on unflipped card
         var this_card = flip_container.text(); // we'll need this a lot
