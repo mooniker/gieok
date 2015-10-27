@@ -2,14 +2,15 @@
 @import url(https://fonts.googleapis.com/css?family=Crafty+Girls);
 
 body {
-  background: white;
+  background: green;
   text-align: center;
 }
 #table {
   margin: 0 auto;
+  padding: 1em .2em;
   background: green;
   width: 640px;
-  /*font-size: 120%;*/
+  font-size: 120%;
   /*font-family: 'Crafty Girls', script, cursive;*/
 }
 
@@ -24,10 +25,10 @@ nav ul {
 }
 
 .card-on-table {
-  width: 100px;
-  height: 140px;
+  width: 5em; /* 100px; */
+  height: 6.7em; /* 140px; */
   position: relative;
-  perspective: 800px;
+  xperspective: 800px;
   display: inline-block;
 }
 
@@ -59,8 +60,6 @@ nav ul {
 .flippable-card.flipped {
   transform: rotateY( 180deg );
 }
-
-
 /*
   Deck of CSS Cards
   by Jeff Yaus
