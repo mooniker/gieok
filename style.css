@@ -31,7 +31,7 @@ nav button {
   position: absolute;
 }
 button:hover, .flippable-card:hover {
-  cursor: pointer; cursor: hand;
+  cursor: pointer;
 }
 button {
   border-radius: .4em;
@@ -71,7 +71,6 @@ dt {
 }
 #table {
   margin: 0 auto;
-  xpadding: .2em .2em;
   background: green;
   width: 640px;
   font-size: 120%;
@@ -82,7 +81,7 @@ dt {
   width: 5em; /* 100px; */
   height: 6.7em; /* 140px; */
   position: relative;
-  perspective: 1000;
+  perspective: 800px;
   display: inline-block;
   margin: .2em;
 }
