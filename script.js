@@ -200,8 +200,9 @@ var game = {
         //   flip_container.toggleClass("flipped"); // flip the card
         }
 
-      } else if ( !flip_container.hasClass("flipped") ) {
-        // Only do stuff if click is validly on unflipped card
+      } else if ( !flip_container.hasClass("flipped" && flip_container.hasClass("flippable-card")) ) {
+        // Only do stuff if click is validly on unflipped flippable card
+        console.log(flip_container);
         var this_card = flip_container.text(); // we'll need this a lot
         game.click_history.push(this_card); // add this just clicked card to history
         flip_container.toggleClass("flipped"); // flip the card
