@@ -14,6 +14,7 @@ The CSS for the playing cards is lightly adapted from Jeff Yaus's [CSS Playing C
 
 - Provide feedback to show a correct pairing, such as a visual flow or highlighting.
 - Optionally show a replay of the most recent game.
+- Implement a mode in which the computer plays the game.
 - Implement other card sets and allow users to choose a set.
 - Improve the UI for the usual reasons (responsive, scalable, accessibility, etc).
 - Allow speed/interval changes for card flips.
