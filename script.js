@@ -1,5 +1,4 @@
 
-
 var game = {
 
   table: "div#table",
@@ -13,27 +12,23 @@ var game = {
     h: "hearts",
   },
 
+  debug_mode: false,
+
   timer: null,
 
   is_active: false,
-
-  name: "Memory Game",
-
-  last_card_clicked: [],
 
   click_history: [],
 
   matched: [],
 
-  temporarily_visible: [],
-
   cards_to_unflip: [],
 
   cards_in_deck: [],
 
-  cards_on_table: [],
+  //cards_on_table: [],
 
-  speed: 3000,
+  speed: 2000,
 
   timerId: null,
 
@@ -59,7 +54,9 @@ var game = {
   },
 
   shuffle: function () { // need to find better code
-    for ( var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
+    if ( !this.debug_mode ) {
+      for ( var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
+    }
   },
 
   draw_card: function () {
@@ -68,7 +65,6 @@ var game = {
 
   unflip: function () {
     // cards to remove
-    console.log(this);
     var card1 = this.cards_to_unflip.shift();
     var card2 = this.cards_to_unflip.shift();
 
@@ -100,6 +96,7 @@ var game = {
     $("#stopwatch").text(this.stopwatch.toString());
     $("#matches").text(this.matched.length);
     $("#misses").text(Math.floor(this.click_history.length / 2) - this.matched.length);
+    $("#clicks").text(this.click_history.length);
   },
 
   increment_time: function () {
@@ -108,30 +105,13 @@ var game = {
   },
 
   reset: function ( and_play ) {
-    $(".flipped").toggleClass("flipped");
+    $(".flipped").removeClass("flipped");
     this.matched = [];
     this.click_history = [];
     this.update_stats();
-    if ( and_play ) {
-      this.is_active = true;
-      game.timerId = setInterval(this.increment_time.bind(this), 1000);
-      $("#button").css("width", "3em");
-      $("#button").text("Give Up?"); // change button to reflect game now in play
-      $("#button").css("width", "auto");
-    } else {
-      $("#button").css("width", "3em");
-      $("#button").text("Begin?"); // change button to reflect game now in play
-      $("#button").css("width", "auto");
-    }
-  },
+    this.timerId = clearInterval(game.timerId);
+    this.stopwatch = 0;
 
-  start: function () {
-
-    // create and shuffle deck
-    // this.cards_in_deck = this.createSuit("h");
-    // this.cards_in_deck = this.cards_in_deck.concat(this.createSuit("d"));
-    // this.cards_in_deck = this.cards_in_deck.concat(this.createSuit("c"));
-    // this.cards_in_deck = this.cards_in_deck.concat(this.createSuit("s"));
     var hearts = this.createSuit("h");
     hearts.pop();
     var clubs = this.createSuit("c");
@@ -143,13 +123,32 @@ var game = {
       deck += this.cards_in_deck[d][0] + this.cards_in_deck[d][1] + " ";
     }
     console.log("Deck created:", deck);
-    this.shuffle(); // Shuffle deck
+    if ( and_play !== "debug" ) {
+      this.shuffle(); // Shuffle deck
+    }
 
-    // put cards on the table
+    $(this.table).empty();
+
     for (var i = 0; i < 24; i++ ) {
       var drawn_card = this.draw_card();
       $(this.table).append(this.createCard(drawn_card[0], drawn_card[1]));
     }
+    if ( and_play ) {
+      this.is_active = true;
+      game.timerId = setInterval(this.increment_time.bind(this), 1000);
+      $("#button").css("width", "3em");
+      $("#button").text("Give Up?"); // change button to reflect game now in play
+      $("#button").css("width", "auto");
+    } else {
+      $("#button").css("width", "3em");
+      $("#button").text("Pair the Cards?"); // change button to reflect game now in play
+      $("#button").css("width", "auto");
+    }
+  },
+
+  start: function () {
+
+    this.reset();
 
     var game = this; // for the thisiness in the callbacks
 
@@ -157,7 +156,6 @@ var game = {
 
     $("button").on("click", function (e) {
       e.preventDefault();
-      console.log("Active game:", game.is_active);
       if ( game.is_active ) { // if game is active, let's stop it
         $(e.target).text("Try Again?");
         game.is_active = false;
@@ -165,13 +163,21 @@ var game = {
         game.stopwatch = 0;
       } else { // if game is not active, activate it
         $(e.target).text("Give Up?"); // change button to reflect game now in play
-        //game.is_active = true;
-        //game.update_stats();
-        //game.timerId = setInterval(game.increment_time.bind(game), 1000);
         game.reset(true);
       }
-      console.log("Game now active:", game.is_active);
+    });
 
+    $("#interval").on("click", function (e) {
+      e.preventDefault();
+      console.log("Interval changed.");
+      if (game.speed > 1000) {
+        game.speed -= 1000;
+      } else if ( game.speed == 1000 ) {
+        game.speed = 500;
+      } else {
+        game.speed = 3000;
+      }
+      $("#interval").text(game.speed / 1000);
     });
 
     // Attach click listeners to cards
@@ -179,12 +185,21 @@ var game = {
     $(this.table).on("click", function (e) {
       e.preventDefault();
       var flip_container = $(e.target).parent().parent();
+      // need to prevent stray clicks here
 
       if ( !game.is_active ) { // if game not active, clicks not registered
         console.log("Game not active.");
         if ( confirm( "Begin?" ) ) {
           game.reset(true);
+        // if ( game.timerId === null ) {
+        //   console.log("Starting game.");
+        //   game.reset(true);
+        //   alert("hey");
+        //   var this_card = flip_container.text(); // we'll need this a lot
+        //   game.click_history.push(this_card); // add this just clicked card to history
+        //   flip_container.toggleClass("flipped"); // flip the card
         }
+
       } else if ( !flip_container.hasClass("flipped") ) {
         // Only do stuff if click is validly on unflipped card
         var this_card = flip_container.text(); // we'll need this a lot
@@ -199,7 +214,7 @@ var game = {
           var last_letter = game.click_history[game.click_history.length - 1];
           var last_last_letter = game.click_history[game.click_history.length - 2];
           console.log("last_letter:", last_letter, "last_last_letter:", last_last_letter);
-          console.log("Does", last_letter, "match with", last_last_letter + "?",
+          console.log("Does", last_letter.toUpperCase(), "match with", last_last_letter.toUpperCase() + "?",
           last_letter === last_last_letter ? "Yes!" : "No.");
 
           if ( last_letter === last_last_letter ) { // valid pairing
@@ -207,9 +222,8 @@ var game = {
           } else { // botched attempt at pairing
             game.cards_to_unflip.push(last_last_letter);
             game.cards_to_unflip.push(last_letter);
-            setTimeout(game.unflip.bind(game), 3000);
+            setTimeout(game.unflip.bind(game), game.speed);
           }
-
         }
       }
     });
