@@ -86,7 +86,7 @@ dt {
 
 .card-on-table {
   width: 5em; /* 100px; */
-  height: 6.7em; /* 140px; */
+  height: 7em; /* 140px; */
   position: relative;
   perspective: 800px;
   display: inline-block;

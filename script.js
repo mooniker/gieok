@@ -1,43 +1,40 @@
 
 var game = {
 
-  table: "div#table",
+  table: "div#table", // shortcut for refering to the card table
 
-  flip_count: 0,
-
-  suits: {
+  suits: { // used as shortcuts to convert playing cards represented as
+    // two-letter strings to HTML element classes specially styled by CSS
     d: "diamonds",
     s: "spades",
     c: "clubs",
     h: "hearts",
   },
 
-  debug_mode: false,
+  debug_mode: false, // true turns off card deck shuffling
 
-  timer: null,
+  is_active: false, // where game is in play or suspended
 
-  is_active: false,
+  click_history: [], // for card ranks/values of every card clicked per game
 
-  click_history: [],
+  matched: [], // card rank/value of each matched pair
 
-  matched: [],
+  cards_to_unflip: [], // queue for unmatched cards to unflip next refresh
 
-  cards_to_unflip: [],
-
-  cards_in_deck: [],
+  cards_in_deck: [], // array of two-element arrays [[rank, suit], [r, s], etc]
 
   //cards_on_table: [],
 
-  speed: 2000,
+  speed: 2000, // speed in millaseconds for timeout to flipback unmatched cards
 
   timerId: null,
 
-  stopwatch: 0,
+  stopwatch: 0, // current time
 
   createCard: function ( rank, suit ) {
     return "<div class=\"card-on-table\"><div class=\"flippable-card\">" +
     "<figure class=\"card card-facedown\"><span></span></figure>" + "<figure class=\"card card-faceup card-" +
-    this.suits[suit] + " card-" + rank + " card-faceup\"><span>" + rank + "</span></figure>" +
+    this.suits[suit] + " card-" + rank + " card-faceup\"><span></span></figure>" +
     "</div></div>";
   },
 
