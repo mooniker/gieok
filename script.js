@@ -110,7 +110,7 @@ var game = {
     this.matched = [];
     this.click_history = [];
     this.refresh_stats();
-    this.timerId = clearInterval(game.timerId);
+    this.timerId = clearInterval(this.timerId);
     this.stopwatch = 0;
 
     var red = Math.random() < 0.5 ? "h" : "d";
@@ -160,7 +160,8 @@ var game = {
 
   start: function () {
     this.mode = 1;
-    game.timerId = setInterval(this.increment_time.bind(this), 1000);
+    this.timerId = clearInterval(this.timerId);
+    this.timerId = setInterval(this.increment_time.bind(this), 1000);
     $("#button").css("width", "3em");
     $("#button").text("Give Up?"); // change button to reflect game now in play
     $("#button").css("width", "auto");
@@ -181,6 +182,32 @@ var game = {
       case 2: this.reset();
       break;
     }
+  },
+
+  automate: function () { // mode 9 computer plays automatically
+    //
+    var memory = [];
+    var done = false;
+
+    while ( !done ) {
+      var match_found = false;
+      var current_card = 0;
+      while ( !match_found ) {
+        var chosen_card = unflipped_cards.eq(current_card);
+        var text = chosen_card.text();
+        chosen_card.toggleClass("flipped");
+        // TODO
+        if ( memory.indexOf(text) !== -1 ) {
+          // we found a match
+          match_found = true;
+          // TODO
+        }
+      }
+      current_card++;
+    }
+
+
+
   },
 
   init: function () {
@@ -225,7 +252,7 @@ var game = {
       var flip_container = $(e.target).parent().parent();
       // need to prevent stray clicks here
 
-      if ( game.mode === 2 ) { // !game.is_active ) { // if game not active, clicks not registered
+      if ( game.mode === 2 || game.mode === 9 ) { // !game.is_active ) { // if game not active, clicks not registered
         console.log("Game not active.");
         // TODO implement review mode
         // if ( confirm( "Begin?" ) ) {
