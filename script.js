@@ -96,6 +96,7 @@ var game = {
     $("#matches").text(this.matched.length);
     $("#misses").text(Math.floor(this.click_history.length / 2) - this.matched.length);
     $("#clicks").text(this.click_history.length);
+
   },
 
   increment_time: function () {
@@ -112,11 +113,18 @@ var game = {
     this.timerId = clearInterval(game.timerId);
     this.stopwatch = 0;
 
-    var hearts = this.createSuit("h");
-    hearts.pop();
-    var clubs = this.createSuit("c");
-    clubs.pop();
-    this.cards_in_deck = hearts.concat(clubs);
+    var red = Math.random() < 0.5 ? "h" : "d";
+    var black = Math.random() < 0.5 ? "c" : "s";
+    red = this.createSuit(red);
+    black = this.createSuit(black);
+    if ( Math.random() < 0.5 ) {
+      red.pop();
+      black.pop();
+    } else {
+      red.shift();
+      black.shift();
+    }
+    this.cards_in_deck = red.concat(black);
 
     var deck = "";
     for ( var d = 0; d < this.cards_in_deck.length; d++ ) {
