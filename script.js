@@ -163,6 +163,7 @@ var game = {
     game.timerId = setInterval(this.increment_time.bind(this), 1000);
     $("#button").css("width", "3em");
     $("#button").text("Give Up?"); // change button to reflect game now in play
+    $("#button").toggleClass("start");
     $("#button").css("width", "auto");
   },
 
@@ -170,6 +171,7 @@ var game = {
     this.mode = 2;
     $("#button").text("Try Again?");
     this.timerId = clearInterval(game.timerId);
+    $("#button").toggleClass("start");
   },
 
   toggleMode: function () {

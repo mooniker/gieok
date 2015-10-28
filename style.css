@@ -38,8 +38,11 @@ button {
   -webkit-transition: width 4s, height 4s, background-color 4s, -webkit-transform 4s;
   transition: width 4s, height 4s, background-color 4s, transform 4s;
 }
-button:hover {
+button.start:hover {
   color: darkgreen;
+}
+button:hover {
+  color: darkred;
 }
 
 button:focus {
