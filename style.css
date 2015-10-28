@@ -20,7 +20,7 @@ header {
 
 nav {
   display: inline;
-  position: fixed;
+  position: absolute;
   width: 8em;
   top: 7em;
   right: 0;
