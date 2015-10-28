@@ -42,6 +42,13 @@ button {
 button:hover {
   color: darkgreen;
 }
+/*button:hover:before {
+  content: "\2192";
+}
+
+button:hover:after {
+  content: "\2190";
+}*/
 
 button:focus {
   outline: none;
