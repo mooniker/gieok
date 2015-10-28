@@ -185,25 +185,38 @@ var game = {
   },
 
   automate: function () { // mode 9 computer plays automatically
-    //
+    // automate
     var memory = [];
     var done = false;
 
-    while ( !done ) {
-      var match_found = false;
-      var current_card = 0;
-      while ( !match_found ) {
-        var chosen_card = unflipped_cards.eq(current_card);
-        var text = chosen_card.text();
+    while ( !done ) { // keep trucking till detroit
+      var matches_found = []; // keeps pairs of matches found
+      var current_card = 0; // index to loop through unflipped cards
+      while ( matches_found.length === 0 || done ) { // try cards till finding a match
+        var chosen_card = $(".flippable-card").not(".flipped").eq(current_card);
         chosen_card.toggleClass("flipped");
-        // TODO
-        if ( memory.indexOf(text) !== -1 ) {
+        this.click_history.push(chosen_card.text());
+
+        if ( memory.indexOf(chosen_card.text()) !== -1 ) {
           // we found a match
-          match_found = true;
-          // TODO
+          matches_found.push([memory.indexOf(chosen_card.text()), current_card]);
         }
+        memory.push(chosen_card.card_value());
+        current_card++;
+      } // match has been found on the most current card
+      if ( this.click_history.length % 2 === 0 ) {
+        $(".flippable-card").not(".flipped").eq(current_card - 1).toggleClass("flipped");
+        $(".flippable-card").not(".flipped").eq(memory.indexOf(memory[memory.length - 1])).toggleClass("flipped");
+        this.matches.push(memory[memory.length - 1]);
+      } else {
+        currentCard++; // have to check next card first
+        var next_card = $(".flippable-card").not(".flipped").eq(current_card);
+        next_card.toggleClass("flipped");
+        memory.push(next_card.text());
+        // now
+
+
       }
-      current_card++;
     }
 
 
