@@ -1,6 +1,6 @@
 # Overview
 
-_Project Gieok_ ("ghee uhk") is a [memory/concentration card game](https://en.wikipedia.org/wiki/Concentration_(game) implemented in CSS and JavaScript/jQuery with semantic HTML as a two-day [assignment](https://github.com/ga-dc/project1) for full-time students at [General Assembly](https://generalassemb.ly/washington-dc)'s [Web Development Immersive program](https://generalassemb.ly/education/web-development-immersive) in Washington, D.C. All graphics and animations are handled in CSS with HTML entities and JavaScript toggling classes on click events and updating stats.
+_Project Gieok_ ("ghee uhk") is a [memory/concentration card game](https://en.wikipedia.org/wiki/Concentration_(game)) implemented in CSS and JavaScript/jQuery with semantic HTML as a two-day [assignment](https://github.com/ga-dc/project1) for full-time students at [General Assembly](https://generalassemb.ly/washington-dc)'s [Web Development Immersive program](https://generalassemb.ly/education/web-development-immersive) in Washington, D.C. All graphics and animations are handled in CSS with HTML entities and JavaScript toggling classes on click events and updating stats.
 
 See the [demo hosted on Github](http://mooniker.github.io/gieok/).
 
