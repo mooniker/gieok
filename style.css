@@ -71,6 +71,7 @@ dd, dt {
 }
 dd {
   font-size: 240%;
+  padding-bottom: .5em;
 }
 dt {
   text-transform: lowercase;
