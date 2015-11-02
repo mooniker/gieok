@@ -1,3 +1,5 @@
+/* really liked the styles for this site. */
+
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
 body {
@@ -109,6 +111,7 @@ dt {
 .flippable-card .card-facedown {
   /*background: pink;*/
 }
+/* is this how the card rotation is being done? */
 .flippable-card .card-faceup {
   /*background: cyan;*/
   transform: rotateY( 180deg );
@@ -125,7 +128,7 @@ dt {
 
   http://jyaus.github.io/css-playing-cards/
 */
-
+/* you will often see border-box in a splat(*) selector for default border-boxing */
 .card {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -226,6 +229,7 @@ dt {
   color: #000000;
 }
 /* upper left - card value */
+/* Oh my, what is happening here. I would recommend using SASS or SCSS for this sort of thing. Seems like some logic is being abstracted into the styles? not really sure. */
 .card-k:before {
   content: "K";
 }
