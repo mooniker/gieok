@@ -1,6 +1,6 @@
 
 var game = {
-
+// i really like this, when we get to front end frameworks we'll start talking about view objects. In view objects we need a way to refer to the domain of that object in the DOM, often times by using a jQuery selector
   table: "div#table", // shortcut for refering to the card table
 
   suits: { // used as shortcuts to convert playing cards represented as
@@ -10,7 +10,7 @@ var game = {
     c: "clubs",
     h: "hearts",
   },
-
+// fancy i like it! It's great to have properties like this strictly for development.
   debug_mode: false, // true turns off card deck shuffling
 
   is_active: false, // where game is in play or suspended
@@ -33,6 +33,9 @@ var game = {
 
   stopwatch: 0, // current time
 
+  // this is a cool method, maybe a better name for the function would be createCardView, because really were not really creating a card, were creating its representation in the DOM
+  // when we get in to OO design in JS we'll actually create constructor functions for objects and their cooresponding views, ie. cards and their DOM representation
+  // in that way we can compartmentalize the behaviors of the model and the view separately.
   createCard: function ( rank, suit ) {
     return "<div class=\"card-on-table\"><div class=\"flippable-card\">" +
     "<figure class=\"card card-facedown\"><span></span></figure>" + "<figure class=\"card card-faceup card-" +
@@ -54,6 +57,7 @@ var game = {
 
   shuffle: function () { // need to find better code
     if ( !this.debug_mode ) {
+      // whoa didn't know you could instantiate multiple variables in the for loop, not sure whats happening inside the loop though. Maybe instead of having the behavior in arguments of the for block, just setup the iteration and then establish functionality in the code block below for clarity
       for ( var j, x, i = this.cards_in_deck.length; i; j = Math.floor(Math.random() * i), x = this.cards_in_deck[--i], this.cards_in_deck[i] = this.cards_in_deck[j], this.cards_in_deck[j] = x);
     }
   },
@@ -130,7 +134,7 @@ var game = {
     for ( var d = 0; d < this.cards_in_deck.length; d++ ) {
       deck += this.cards_in_deck[d][0] + this.cards_in_deck[d][1] + " ";
     }
-
+// when in production, try to get rid of logs, though, for the purposes of this class just keep them in. Remember, we can always maintain everything we need through version control.
     console.log("Deck created:", deck);
 
     if ( and_play !== "debug" ) {
@@ -172,6 +176,7 @@ var game = {
     this.timerId = clearInterval(game.timerId);
   },
 
+// interesting, this is a cool way to maintain state of the timer in your game
   toggleMode: function () {
     switch ( this.mode ) {
       case 0: this.start();
@@ -269,6 +274,7 @@ var game = {
           if ( last_letter === last_last_letter ) { // valid pairing
             game.matched.push(last_letter);
           } else { // botched attempt at pairing
+            // theres something here in this else condition, in/before/after the setTimeout thats causing a bug to match but then flip the cards back over anyway.
             game.cards_to_unflip.push(last_last_letter);
             game.cards_to_unflip.push(last_letter);
             setTimeout(game.unflip.bind(game), game.speed);
