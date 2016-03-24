@@ -1,0 +1,24 @@
+{
+  "type": "hanja",
+  "set": [
+    {
+      "value": "&#26085;",
+      "title": "day"
+    },{
+      "value": "&#26376;",
+      "title": "moon"
+    },{
+      "value": "&#28779;",
+      "title": "fire"
+    },{
+      "value": "&#27700;",
+      "title": "water"
+    },{
+      "value": "&#26408;",
+      "title": "wood"
+    },{
+      "value": "&#22303;",
+      "title": "earth"
+    }
+  ]
+}
