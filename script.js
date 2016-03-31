@@ -163,10 +163,6 @@ var game = {
     }
   },
 
-  reset: function() {
-    this.mode = 1;
-  },
-
   clicks: 0,
 
   clickHistory: [],
