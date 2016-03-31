@@ -284,6 +284,8 @@ var game = {
       return !$(card).hasClass('solved');
     });
 
+    // TODO if there are only two unsolved cards, they are obviously a match that should be hinted (as if they needed to be hinted)
+
     var uniqueCards = unsolvedCards.filter(function(item, pos) {
       return $(unsolvedCards).index(item) == pos;
     });
