@@ -46,12 +46,90 @@ var helpers = {
     return $(cardElement, cardValueSelector).text();
   },
 
+  // used in debugMode only
   getClickHistoryString: function(clickHistory) {
     var output = '';
     for (var i = 0; i < clickHistory.length; i++) {
       output += this.getCardValueFor(clickHistory[i]) + ' ';
     }
     return output;
+  },
+
+  callbackAfterCardClick: function(card, game) {
+    if ($(card).hasClass('card-container') && game.mode === 0) {
+
+      // if button doesn't already have shake animation class
+      if (!$(game.button).hasClass(game.shakeClass)) {
+        // add a temporary shake animation class
+        $(game.button).addClass(game.shakeClass);
+        setTimeout(function() { // remove animate-nod class from elements
+          $(game.button).removeClass(game.shakeClass);
+        }, game.flipDelay);
+      }
+
+    } else if (!$(card).hasClass('flip') && game.mode > 0) { // user clicks on a flippable card
+
+      // player clicks on card, change to mode 2 (in play) and start timer;
+      if (game.mode === 1) {
+        game.start();
+      }
+
+      $(card).toggleClass('flip');
+      game.clicks++;
+
+      var thisCardValue = helpers.getCardValueFor(card);
+      game.clickHistory.push(card);
+
+      game.debugConsoleLog('<debug-mode> CLICK #' + game.clicks +
+        ' CLICK HISTORY: ' + helpers.getClickHistoryString(game.clickHistory) +
+        ' MATCHES: ' + game.scoring.matches + ' MISSES: ' +
+        game.scoring.misses);
+
+      if (game.clicks % 2 === 0) { // every second card click
+        // check if they match
+        var lastCard = game.clickHistory[game.clickHistory.length - 1];
+        var lastLastCard = game.clickHistory[game.clickHistory.length - 2];
+        var lastCardValue = helpers.getCardValueFor(lastCard);
+        var lastLastCardValue = helpers.getCardValueFor(lastLastCard);
+
+        if (lastCardValue === lastLastCardValue) {
+
+          game.debugConsoleLog('Match: ' + lastCardValue);
+          game.scoring.matches += 1;
+
+          // mark these cards as solved with a CSS class for the business logic
+          $(lastCard).addClass('solved');
+          $(lastLastCard).addClass('solved');
+
+          $(lastCard).addClass(game.nodClass);
+          $(lastLastCard).addClass(game.nodClass);
+
+          setTimeout(function() { // remove animate-nod class from elements
+            $(lastCard).removeClass(game.nodClass);
+            $(lastLastCard).removeClass(game.nodClass);
+          }, game.flipDelay);
+
+          game.checkSolved();
+
+        } else {
+
+          game.debugConsoleLog('Not a Match: ' + lastCardValue + ' and ' + lastLastCardValue);
+          game.scoring.misses += 1;
+
+          $(lastCard).addClass(game.shakeClass);
+          $(lastLastCard).addClass(game.shakeClass);
+
+          setTimeout(function() { // turn the unmatched cards back over
+            $(lastCard).removeClass(game.shakeClass).removeClass('flip');
+            $(lastLastCard).removeClass(game.shakeClass).removeClass('flip');
+          }.bind(card), game.flipDelay);
+        }
+      }
+
+      game.updateStats();
+
+    }//big if
+
   }
 
 };
@@ -73,6 +151,9 @@ var game = {
   // $stopWatch: $(this.stopWatch),
   button: '#button',
   // $button: $(this.button),
+
+  shakeClass: 'animate-shake',
+  nodClass: 'animate-nod',
 
   debugMode: false, // toggle this to true for debugging UI elements and console messages
 
@@ -97,7 +178,10 @@ var game = {
 
   scoring: {
     matches: 0,
+    matchesEl: '#matches',
     misses: 0,
+    missesEl: '#misses',
+    clicksEl: '#clicks',
     won: null
   },
 
@@ -124,80 +208,7 @@ var game = {
 
     card.on('click', function(e) {
       e.preventDefault();
-
-      if ($(this).hasClass('card-container') && game.mode === 0) {
-
-        // if button doesn't already have shake animation class
-        if (!$(game.button).hasClass('not-matched-shake')) {
-          // add a temporary shake animation class
-          $(game.button).addClass('not-matched-shake');
-          setTimeout(function() { // remove highlighted-match class from elements
-            $(game.button).removeClass('not-matched-shake');
-          }, game.flipDelay);
-        }
-
-      } else if (!$(this).hasClass('flip') && game.mode > 0) { // user clicks on a flippable card
-
-        // player clicks on card, change to mode 2 (in play) and start timer;
-        if (game.mode === 1) {
-          game.start();
-        }
-
-        $(this).toggleClass('flip');
-        game.clicks++;
-
-        var thisCardValue = helpers.getCardValueFor(this);
-        game.clickHistory.push(this);
-
-        game.debugConsoleLog('<debug-mode> CLICK #' + game.clicks +
-          ' CLICK HISTORY: ' + helpers.getClickHistoryString(game.clickHistory) +
-          ' MATCHES: ' + game.scoring.matches + ' MISSES: ' +
-          game.scoring.misses);
-
-        if (game.clicks % 2 === 0) { // every second card click
-          // check if they match
-          var lastCard = game.clickHistory[game.clickHistory.length - 1];
-          var lastLastCard = game.clickHistory[game.clickHistory.length - 2];
-          var lastCardValue = helpers.getCardValueFor(lastCard);
-          var lastLastCardValue = helpers.getCardValueFor(lastLastCard);
-
-          if (lastCardValue === lastLastCardValue) {
-
-            game.debugConsoleLog('Match: ' + lastCardValue);
-            game.scoring.matches += 1;
-
-            // mark these cards as solved with a CSS class for the business logic
-            $(lastCard).addClass('solved');
-            $(lastLastCard).addClass('solved');
-
-            $(lastCard).addClass('highlighted-match');
-            $(lastLastCard).addClass('highlighted-match');
-
-            setTimeout(function() { // remove highlighted-match class from elements
-              $(lastCard).removeClass('highlighted-match');
-              $(lastLastCard).removeClass('highlighted-match');
-            }, game.flipDelay);
-
-            game.checkSolved();
-
-          } else {
-
-            game.debugConsoleLog('Not a Match: ' + lastCardValue + ' and ' + lastLastCardValue);
-            game.scoring.misses += 1;
-
-            $(lastCard).addClass('not-matched-shake');
-            $(lastLastCard).addClass('not-matched-shake');
-
-            setTimeout(function() { // turn the unmatched cards back over
-              $(lastCard).removeClass('not-matched-shake').removeClass('flip');
-              $(lastLastCard).removeClass('not-matched-shake').removeClass('flip');
-            }.bind(this), game.flipDelay);
-          }
-        }
-
-        game.updateStats();
-
-      }//big if
+      helpers.callbackAfterCardClick(this, game);
     });
 
     return card;
@@ -257,9 +268,9 @@ var game = {
 
   updateStats: function() {
     $(this.stopWatch).text(this.timer);
-    $('#clicks').text(this.clickHistory.length);
-    $('#misses').text(this.scoring.misses);
-    $('#matches').text(this.scoring.matches);
+    $(this.scoring.clicksEl).text(this.clickHistory.length);
+    $(this.scoring.missesEl).text(this.scoring.misses);
+    $(this.scoring.matchesEl).text(this.scoring.matches);
   },
 
   updateStopWatch: function() {

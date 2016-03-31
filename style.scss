@@ -100,7 +100,7 @@ button {
   font-size: $card-size-width;
 }
 
-.highlighted-match {
+.animate-nod {
   box-shadow: 1em yellow;
 }
 
@@ -108,7 +108,7 @@ button {
 learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 */
 
-.not-matched-shake {
+.animate-shake {
   animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
@@ -133,7 +133,7 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
   }
 }
 
-.highlighted-match {
+.animate-nod {
   animation: nod 0.82s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
