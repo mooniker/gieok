@@ -1,119 +1,143 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
-
 body {
   background: green;
-  text-align: center;
-}
+  text-align: center; }
 
-header, dl, button{
-  font-family: 'Montserrat', script, cursive;
+header, dl, button {
+  font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
-  font-size: 180%;
-}
-header {
-  padding: .6em 0 .6em 0;
-}
-.notClickable:hover {
-  cursor: no-drop;
-}
+  font-size: 160%;
+  border-radius: 0.3em; }
 
-nav {
-  display: inline;
+button {
+  background: white; }
+
+#table {
+  width: 27em;
+  margin: 3em auto; }
+
+/* entire container, keeps perspective */
+.card-container {
+  perspective: 1000;
+  display: inline-block;
+  padding: 0.2em; }
+
+/* keep mouse cursor normal when over flipped cards */
+.card-container.flip:hover {
+  cursor: default; }
+
+/* make mouse cursor a finger pointer when over a flippable card  */
+.card-container:not(.flip):hover {
+  cursor: pointer; }
+
+/* flip toggle */
+.card-container.flip .flippable-card {
+  transform: rotateY(180deg); }
+
+.card-container, .card-back, .card-face {
+  width: 6em;
+  height: 6.8em;
+  border-radius: 10%; }
+
+/* flip speed goes here */
+.flippable-card {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+  position: relative; }
+
+/* hide back of pane during swap */
+.card-back, .card-face {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0; }
+
+/* front pane, placed above back */
+.card-back {
+  z-index: 2;
+  /* for firefox 31 */
+  transform: rotateY(0deg);
+  background: steelblue; }
+
+/* back, initially hidden pane */
+.card-face {
+  transform: rotateY(180deg);
+  color: black;
+  background: white; }
+
+.card-face p {
+  display: block;
+  margin: auto;
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 6em; }
+
+.highlighted-match {
+  box-shadow: 1em yellow; }
+
+/* shake failed matches
+learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
+*/
+.not-matched-shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px; }
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0); }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0); }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0); } }
+.highlighted-match {
+  animation: nod 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px; }
+
+@keyframes nod {
+  10%, 90% {
+    transform: translate3d(0, -1px, 0); }
+  20%, 80% {
+    transform: translate3d(0, 2px, 0); }
+  30%, 50%, 70% {
+    transform: translate3d(0, -4px, 0); }
+  40%, 60% {
+    transform: translate3d(0, 4px, 0); } }
+/* score and stats board */
+#stats {
   position: absolute;
   width: 8em;
-  top: 7em;
+  top: 1em;
   right: 0;
   padding: 1em;
-  cursor: default;
-}
-nav button {
-  position: absolute;
-}
-button:hover, .flippable-card:hover {
-  cursor: pointer;
-}
-button {
-  border-radius: .4em;
-  box-shadow: 0.04em 0.04em 0.04em 0.04em rgba(20, 20, 20, 0.4);
-  -webkit-transition: width 4s, height 4s, background-color 4s, -webkit-transform 4s;
-  transition: width 4s, height 4s, background-color 4s, transform 4s;
-}
-button.start:hover {
-  color: darkgreen;
-}
-button:hover {
-  color: darkred;
-}
+  cursor: default; }
 
-button:focus {
-  outline: none;
-}
-.flipped:hover {
-  cursor: no-drop;
-}
-nav ul {
-  list-style: none;
-  position: relative;
-  display: block;
-  top: 10em;
-}
 dl {
-  margin: auto;
-}
+  margin: auto; }
+
 dd, dt {
   display: block;
-  margin: auto;
-}
+  margin: auto; }
+
 dd {
   font-size: 240%;
-  padding-bottom: .5em;
-}
+  padding-bottom: .5em; }
+
 dt {
   text-transform: lowercase;
-  font-size: 60%;
-}
-#table {
-  margin: 0 auto;
-  background: green;
-  width: 640px;
-  font-size: 120%;
-  /*font-family: 'Crafty Girls', script, cursive;*/
-}
+  font-size: 60%; }
 
-.card-on-table {
-  width: 5em; /* 100px; */
-  height: 6.7em; /* 140px; */
-  position: relative;
-  perspective: 800px;
-  display: inline-block;
-  margin: .2em;
-}
+/* for debugMode only */
+p.hint {
+  color: steelblue; }
 
-.flippable-card {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transform-style: preserve-3d;
-  transition: transform 1s;
-}
+.hint:hover {
+  color: white; }
 
-.flippable-card figure {
-  margin: 0;
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-}
-
-.flippable-card .card-facedown {
-  /*background: pink;*/
-}
-.flippable-card .card-faceup {
-  /*background: cyan;*/
-  transform: rotateY( 180deg );
-}
-
-.flippable-card.flipped {
-  transform: rotateY( 180deg );
-}
+/*# sourceMappingURL=style.css.map */

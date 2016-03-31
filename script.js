@@ -35,8 +35,8 @@ var game = {
 
   createCard: function ( rank, suit ) {
     return "<div class=\"card-on-table\"><div class=\"flippable-card\">" +
-    "<figure class=\"card card-facedown\"><span></span></figure>" + "<figure class=\"card card-faceup card-" +
-    this.suits[suit] + " card-" + rank + " card-faceup\"><span></span><p>" + rank + "</p></figure>" +
+    "<div class=\"card card-facedown\"><span></span></div>" + "<div class=\"card card-faceup card-" +
+    this.suits[suit] + " card-" + rank + " card-faceup\"><span></span><p>" + rank + "</p></div>" +
     "</div></div>";
   },
 
@@ -306,6 +306,339 @@ var game = {
   }
 };
 
+var hanjaCards = {
+  "type": "hanja",
+  "set": [
+    {
+      "value": "&#26085;",
+      "title": "day"
+    },{
+      "value": "&#26376;",
+      "title": "moon"
+    },{
+      "value": "&#28779;",
+      "title": "fire"
+    },{
+      "value": "&#27700;",
+      "title": "water"
+    },{
+      "value": "&#26408;",
+      "title": "wood"
+    },{
+      "value": "&#37329",
+      "title": "metal"
+    },{
+      "value": "&#22303;",
+      "title": "earth"
+    },{
+      "value": "&#20154;",
+      "title": "person"
+    }
+  ]
+};
+
+var helpers = {
+
+  shuffle: function(set) {
+    var i = 0, j = 0, temp = null;
+    for (i = set.length - 1; i > 0; i -= 1) {
+      j = Math.floor(Math.random() * (i + 1));
+      temp = set[i];
+      set[i] = set[j];
+      set[j] = temp;
+    }
+  },
+
+  getCardValueFor: function(cardElement) {
+    var cardValueSelector = '.card-face p.value';  // jquery selector for card value
+    return $(cardElement, cardValueSelector).text();
+  },
+
+  getClickHistoryString: function(clickHistory) {
+    var output = '';
+    for (var i = 0; i < clickHistory.length; i++) {
+      output += this.getCardValueFor(clickHistory[i]) + ' ';
+    }
+    return output;
+  }
+
+};
+
+var gameRedux = {
+
+  // game modes
+  // 0 === game is suspended/not active
+  // 1 === game is set and ready to go
+  // 2 === game is in progress
+  mode: 0,
+
+  columns: 4,
+
+  // jquery selectors for game elements
+  table: '#table',
+  stopWatch: '#stopwatch',
+
+  debugMode: false, // toggle this to true for debugging UI elements and console messages
+
+  debugConsoleLog: function(msg) {
+    if (this.debugMode) {
+      console.log(msg);
+    }
+  },
+
+  reset: function() {
+    this.mode = 1;
+  },
+
+  clicks: 0,
+
+  clickHistory: [],
+
+  lastCardClicked: null,
+  lastLastCardClicked: null,
+
+  lastCardValue: null,
+
+  scoring: {
+    matches: 0,
+    misses: 0
+  },
+
+  flipDelay: 2000, // delay (in millaseconds) for unmatched cards to flip back
+
+  cards: {
+    type: undefined,
+    set: []
+  },
+
+  timerId: null,
+  timer: 0, // in seconds, incremented by timer
+
+  createCardElement: function(value, title) {
+
+    var game = this;
+
+    var hintContentInDebugMode = '';
+    if (this.debugMode)
+      hintContentInDebugMode = '<p class="hint">' + title + '</p>';
+
+    var cardValueElement = '<p title="' + title + '">' + value + '</p>';
+    var card = $('<div class="card-container"><div class="flippable-card"><div class="card-back">' + hintContentInDebugMode + '</div><div class="card-face">' + cardValueElement + '</div></div></div>');
+
+    card.on('click', function(e) {
+      e.preventDefault();
+
+      if (!$(this).hasClass('flip') && game.mode > 0) { // user clicks on a flippable card
+
+        // player clicks on card, change to mode 2 (in play) and start timer;
+        if (game.mode === 1) {
+          game.start();
+        }
+
+        $(this).toggleClass('flip');
+        game.clicks++;
+
+        var thisCardValue = helpers.getCardValueFor(this);
+        game.clickHistory.push(this);
+
+        game.debugConsoleLog('<debug-mode> CLICK #' + game.clicks +
+          ' CLICK HISTORY: ' + helpers.getClickHistoryString(game.clickHistory) +
+          ' MATCHES: ' + game.scoring.matches + ' MISSES: ' +
+          game.scoring.misses);
+
+        if (game.clicks % 2 === 0) { // every second card click
+          // check if they match
+          var lastCard = game.clickHistory[game.clickHistory.length - 1];
+          var lastLastCard = game.clickHistory[game.clickHistory.length - 2];
+          var lastCardValue = helpers.getCardValueFor(lastCard);
+          var lastLastCardValue = helpers.getCardValueFor(lastLastCard);
+
+          if (lastCardValue === lastLastCardValue) {
+
+            game.debugConsoleLog('Match: ' + lastCardValue);
+            game.scoring.matches += 1;
+
+            // mark these cards as solved with a CSS class for the business logic
+            $(lastCard).toggleClass('solved');
+            $(lastLastCard).toggleClass('solved');
+
+            $(lastCard).toggleClass('highlighted-match');
+            $(lastLastCard).toggleClass('highlighted-match');
+
+            setTimeout(function() { // remove highlighted-match class from elements
+              $(lastCard).toggleClass('highlighted-match');
+              $(lastLastCard).toggleClass('highlighted-match');
+            }, game.flipDelay);
+
+            game.checkFinished();
+
+          } else {
+
+            game.debugConsoleLog('Not a Match: ' + lastCardValue + ' and ' + lastLastCardValue);
+            game.scoring.misses += 1;
+
+            $(lastCard).toggleClass('not-matched-shake');
+            $(lastLastCard).toggleClass('not-matched-shake');
+
+            setTimeout(function() { // turn the unmatched cards back over
+              $(lastCard).toggleClass('not-matched-shake').toggleClass('flip');
+              $(lastLastCard).toggleClass('not-matched-shake').toggleClass('flip');
+            }.bind(this), game.flipDelay);
+          }
+        }
+
+        game.updateStats();
+
+      }//big if
+    });
+
+    return card;
+  },
+
+  dealCard: function(card) {
+    $(this.table).append(this.createCardElement(card.value, card.title));
+  },
+
+  dealTheCards: function() {
+
+    // remove cards from table
+    $(this.table).empty();
+
+    // Randomize
+    helpers.shuffle(this.cards.set);
+
+    // var totalCardMax = 12;
+
+    if (this.debugMode) {
+
+      // let us see where the cards are in debugMode
+      var output = '';
+      for (var i = 0; i < this.cards.set.length; i++) {
+        output += this.cards.set[i].title + ' ';
+        if ((i + 1) % this.columns === 0) // line break according to columns
+          output += '\n';
+      }
+      console.log(output);
+    }
+
+    $.each(this.cards.set, function(index, value) {
+      this.dealCard(value);
+    }.bind(this));
+
+    // change game mode to 1 (ready to play)
+    this.mode = 1;
+
+  },
+
+  checkFinished: function() {
+    this.debugConsoleLog('SOLVED: ' + $('.card-container.solved').length + ' OUT OF ' + this.cards.set.length);
+    if ($('.card-container.solved').length >= this.cards.set.length) {
+      // all cards have been solved
+      // TODO
+      // yay-ness
+      this.debugConsoleLog('YAY!');
+      this.stop();
+    }
+  },
+
+  randomlyChooseUnflippedCard: function() {
+    // TODO randomly choose from among
+    var numUnflippedCards = $('.card-container:not(.flip)').length;
+    if ($('.card-container.solved').length > 0 && numUnflippedCards > 0) {
+      var randomInt = Math.floor(Math.random() * (numUnflippedCards - 1));
+    }
+  },
+
+  updateStats: function() {
+    $('#clicks').text(this.clickHistory.length);
+    $('#misses').text(this.scoring.misses);
+    $('#matches').text(this.scoring.matches);
+  },
+
+  updateStopWatch: function() {
+    this.timer += 1;
+    $(this.stopWatch).text(this.timer);
+    // this.debugConsoleLog('Timer: ' + this.timer);
+  },
+
+  toggleButton: function(e) {
+
+    e.preventDefault();
+
+    switch(this.mode) {
+      case 0: // game is suspended
+        this.set(); // set up game, ie mode 1
+        break;
+      case 1: // game is set up and ready to go
+        this.start(); // start timer and game play
+        break;
+      case 2: // game is in progress
+        this.stop(); // end game play, freeze timer
+        break;
+      default:
+        game.debugConsoleLog('Button toggled.');
+    }
+  },
+
+  init: function(cardsJson) { // get stuff needed for game
+    // remind developer if debugMode is enabled.
+    this.debugConsoleLog('ANNOUNCEMENT: debugMode === true');
+
+    for (var i = 0; i < cardsJson.set.length; i++) {
+      this.cards.set.push(cardsJson.set[i]);
+      this.cards.set.push(cardsJson.set[i]); // second copy
+    }
+
+    $('#button').on('click', this.toggleButton.bind(this)); // bind this.toggleButton callback to this game, not the clicked-on button element
+
+    this.debugConsoleLog('Game initiated. (Mode 0)');
+
+    this.set(); // switch to mode 1
+
+  },
+
+  set: function() { // switch to mode 1 (game is ready to begin)
+
+    this.mode = 1;
+
+    this.dealTheCards();
+
+    // Uncomment this card to show all cards flipped faceside up on startup
+    // $.each($('.card-container'), function(index, div) {
+    //   $(div).toggleClass('flip');
+    // });
+
+    $('#button').text('Pair the Cards');
+
+    this.debugConsoleLog('Cards dealt, game set. (Mode 1)');
+
+  },
+
+  start: function() { // switch to mode 2, game is now in progress
+    this.timer = 0;
+    this.updateStopWatch();
+    this.mode = 2;
+    clearInterval(this.timerId);
+    this.timerId = setInterval(this.updateStopWatch.bind(this), 1000);
+
+    $('#button').text('Give Up?');
+
+    this.debugConsoleLog('Game now in progress. (Mode 2)');
+  },
+
+  stop: function() { // switch to mode 0, gameplay is suspended
+    this.mode = 0;
+    clearInterval(this.timerId);
+
+    $('#button').text('Try Again?');
+
+    this.debugConsoleLog('Game stopped. (Mode 0)');
+  }
+
+};
+
 $(document).ready(function() {
-  game.init();
+
+  gameRedux.init(hanjaCards);
+
 });
