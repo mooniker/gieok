@@ -613,10 +613,13 @@ var gameRedux = {
 
   },
 
-  set: function() { // switch to mode 1 (game is ready to begin)
+  set: function() { // switch/reset to mode 1 (game is ready to begin)
 
     this.mode = 1;
     this.timer = 0;
+    this.scoring.matches = 0;
+    this.scoring.misses = 0;
+    this.clickHistory = [];
     clearInterval(this.timerId);
     this.updateStats();
 
