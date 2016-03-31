@@ -21,6 +21,11 @@ button {
   background: white;
 }
 
+#button { // TODO add transition on button changes
+  transition: all 2s;  // but how?
+  // transform: rotate(360deg);
+}
+
 #table {
   width: $card-size-width * $card-columns + $card-size-width / 2;
   margin: ($card-size-width / 2) auto;
