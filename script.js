@@ -55,6 +55,16 @@ var helpers = {
     return output;
   },
 
+  animateCard: function(card, animationClass, classToRemove) {
+    $(card).addClass(animationClass);
+
+    setTimeout(function() { // remove animate-nod class from elements
+      $(card).removeClass(animationClass);
+      if (classToRemove)
+        $(card).removeClass(classToRemove);
+    }, game.flipDelay);
+  },
+
   callbackAfterCardClick: function(card, game) {
     if ($(card).hasClass('card-container') && game.mode === 0) {
 
@@ -101,13 +111,16 @@ var helpers = {
           $(lastCard).addClass('solved');
           $(lastLastCard).addClass('solved');
 
-          $(lastCard).addClass(game.nodClass);
-          $(lastLastCard).addClass(game.nodClass);
+          // $(lastCard).addClass(game.nodClass);
+          // $(lastLastCard).addClass(game.nodClass);
+          //
+          // setTimeout(function() { // remove animate-nod class from elements
+          //   $(lastCard).removeClass(game.nodClass);
+          //   $(lastLastCard).removeClass(game.nodClass);
+          // }, game.flipDelay);
 
-          setTimeout(function() { // remove animate-nod class from elements
-            $(lastCard).removeClass(game.nodClass);
-            $(lastLastCard).removeClass(game.nodClass);
-          }, game.flipDelay);
+          this.animateCard(lastCard, game.nodClass);
+          this.animateCard(lastLastCard, game.nodClass);
 
           game.checkSolved();
 
@@ -116,13 +129,16 @@ var helpers = {
           game.debugConsoleLog('Not a Match: ' + lastCardValue + ' and ' + lastLastCardValue);
           game.scoring.misses += 1;
 
-          $(lastCard).addClass(game.shakeClass);
-          $(lastLastCard).addClass(game.shakeClass);
+          // $(lastCard).addClass(game.shakeClass);
+          // $(lastLastCard).addClass(game.shakeClass);
+          //
+          // setTimeout(function() { // turn the unmatched cards back over
+          //   $(lastCard).removeClass(game.shakeClass).removeClass('flip');
+          //   $(lastLastCard).removeClass(game.shakeClass).removeClass('flip');
+          // }.bind(card), game.flipDelay);
 
-          setTimeout(function() { // turn the unmatched cards back over
-            $(lastCard).removeClass(game.shakeClass).removeClass('flip');
-            $(lastLastCard).removeClass(game.shakeClass).removeClass('flip');
-          }.bind(card), game.flipDelay);
+          this.animateCard(lastCard, game.shakeClass, 'flip');
+          this.animateCard(lastLastCard, game.shakeClass, 'flip');
         }
       }
 
@@ -254,6 +270,46 @@ var game = {
     } else this.scoring.won = false;
   },
 
+  hasMatchableCardsInClickHistory: function() {
+    // TODO search through click history, filter by cards that aren't solved and
+    // see if there are any potential matches
+
+    return this.clickHistory.filter(function(card) {
+
+    });
+  },
+
+  getHint: function() {
+    var unsolvedCards = this.clickHistory.filter(function(card) {
+      return !$(card).hasClass('solved');
+    });
+
+    var uniqueCards = unsolvedCards.filter(function(item, pos) {
+      return $(unsolvedCards).index(item) == pos;
+    });
+
+    // seach the cards we've flipped over already for matches.
+    var matchFound = false;
+    for (var i = 0; i < uniqueCards.length; i++) {
+      if (matchFound) break; // if we've already found a match, don't do the rest of this for loop
+      var matchedCards = uniqueCards.filter(function(card) {
+        return $(uniqueCards[i], 'p').text() === $(card, 'p').text();
+      });
+      if (matchedCards.length > 1) {
+        matchFound = true;
+        helpers.animateCard(matchedCards[0], this.nodClass);
+        helpers.animateCard(matchedCards[1], this.nodClass);
+      }
+    }
+    if (!matchFound) { // if above for loop has been exhausted
+      this.debugConsoleLog('No matches in memory, need to choose a random card.');
+      helpers.animateCard(this.button, this.shakeClass);
+    } else {
+      this.debugConsoleLog('Found a match in memory');
+    }
+
+  },
+
   randomlyChooseUnflippedCard: function() {
     // TODO randomly choose from among
     var numUnflippedCards = $('.card-container:not(.flip)').length;
@@ -358,5 +414,11 @@ var game = {
 $(document).ready(function() {
 
   game.init(hanjaCards);
+
+  $(document).on('keypress', function(e) {
+    if (e.keyCode === 104) {
+      game.getHint();
+    }
+  });
 
 });
