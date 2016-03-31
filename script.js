@@ -376,11 +376,11 @@ var gameRedux = {
 
   // jquery selectors and jquery objects for game elements
   table: '#table',
-  $table: $(this.table),
+  // $table: $(this.table),
   stopWatch: '#stopwatch',
-  $stopWatch: $(this.stopWatch),
+  // $stopWatch: $(this.stopWatch),
   button: '#button',
-  $button: $(this.button),
+  // $button: $(this.button),
 
   debugMode: false, // toggle this to true for debugging UI elements and console messages
 
@@ -405,7 +405,8 @@ var gameRedux = {
 
   scoring: {
     matches: 0,
-    misses: 0
+    misses: 0,
+    won: null
   },
 
   flipDelay: 2000, // delay (in millaseconds) for unmatched cards to flip back
@@ -435,7 +436,7 @@ var gameRedux = {
       if ($(this).hasClass('card-container') && game.mode === 0) {
 
         // if button doesn't already have shake animation class
-        if (!game.$button.hasClass('not-matched-shake')) {
+        if (!$(game.button).hasClass('not-matched-shake')) {
           // add a temporary shake animation class
           $(game.button).addClass('not-matched-shake');
           setTimeout(function() { // remove highlighted-match class from elements
@@ -485,7 +486,7 @@ var gameRedux = {
               $(lastLastCard).removeClass('highlighted-match');
             }, game.flipDelay);
 
-            game.checkFinished();
+            game.checkSolved();
 
           } else {
 
@@ -545,15 +546,13 @@ var gameRedux = {
 
   },
 
-  checkFinished: function() {
+  checkSolved: function() {
     this.debugConsoleLog('SOLVED: ' + $('.card-container.solved').length + ' OUT OF ' + this.cards.set.length);
     if ($('.card-container.solved').length >= this.cards.set.length) {
-      // all cards have been solved
-      // TODO
-      // yay-ness
       this.debugConsoleLog('YAY!');
+      this.scoring.won = true;
       this.stop();
-    }
+    } else this.scoring.won = false;
   },
 
   randomlyChooseUnflippedCard: function() {
@@ -605,7 +604,7 @@ var gameRedux = {
       this.cards.set.push(cardsJson.set[i]); // second copy
     }
 
-    $('#button').on('click', this.toggleButton.bind(this)); // bind this.toggleButton callback to this game, not the clicked-on button element
+    $(this.button).on('click', this.toggleButton.bind(this)); // bind this.toggleButton callback to this game, not the clicked-on button element
 
     this.debugConsoleLog('Game initiated. (Mode 0)');
 
@@ -630,7 +629,7 @@ var gameRedux = {
     //   $(div).toggleClass('flip');
     // });
 
-    $('#button').text('Pair the Cards');
+    $(this.button).text('Pair the Cards');
 
     this.debugConsoleLog('Cards dealt, game set. (Mode 1)');
 
@@ -641,7 +640,7 @@ var gameRedux = {
     this.mode = 2;
     this.timerId = setInterval(this.updateStopWatch.bind(this), 1000);
 
-    $('#button').text('Give Up?');
+    $(this.button).text('Give Up?');
 
     this.debugConsoleLog('Game now in progress. (Mode 2)');
   },
@@ -650,9 +649,9 @@ var gameRedux = {
     this.mode = 0;
     clearInterval(this.timerId);
 
-    $('#button').text('Try Again?');
-
-    this.debugConsoleLog('Game stopped. (Mode 0)');
+    var buttonText = this.scoring.won ? 'Nice! Play Again?' : 'Try Again?';
+    $(this.button).text(buttonText);
+    this.debugConsoleLog(buttonText + ' - Game stopped. (Mode 0)');
   }
 
 };
