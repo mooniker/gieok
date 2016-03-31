@@ -374,9 +374,13 @@ var gameRedux = {
 
   columns: 4,
 
-  // jquery selectors for game elements
+  // jquery selectors and jquery objects for game elements
   table: '#table',
+  $table: $(this.table),
   stopWatch: '#stopwatch',
+  $stopWatch: $(this.stopWatch),
+  button: '#button',
+  $button: $(this.button),
 
   debugMode: false, // toggle this to true for debugging UI elements and console messages
 
@@ -428,7 +432,18 @@ var gameRedux = {
     card.on('click', function(e) {
       e.preventDefault();
 
-      if (!$(this).hasClass('flip') && game.mode > 0) { // user clicks on a flippable card
+      if ($(this).hasClass('card-container') && game.mode === 0) {
+
+        // if button doesn't already have shake animation class
+        if (!game.$button.hasClass('not-matched-shake')) {
+          // add a temporary shake animation class
+          $(game.button).addClass('not-matched-shake');
+          setTimeout(function() { // remove highlighted-match class from elements
+            $(game.button).removeClass('not-matched-shake');
+          }, game.flipDelay);
+        }
+
+      } else if (!$(this).hasClass('flip') && game.mode > 0) { // user clicks on a flippable card
 
         // player clicks on card, change to mode 2 (in play) and start timer;
         if (game.mode === 1) {
@@ -459,15 +474,15 @@ var gameRedux = {
             game.scoring.matches += 1;
 
             // mark these cards as solved with a CSS class for the business logic
-            $(lastCard).toggleClass('solved');
-            $(lastLastCard).toggleClass('solved');
+            $(lastCard).addClass('solved');
+            $(lastLastCard).addClass('solved');
 
-            $(lastCard).toggleClass('highlighted-match');
-            $(lastLastCard).toggleClass('highlighted-match');
+            $(lastCard).addClass('highlighted-match');
+            $(lastLastCard).addClass('highlighted-match');
 
             setTimeout(function() { // remove highlighted-match class from elements
-              $(lastCard).toggleClass('highlighted-match');
-              $(lastLastCard).toggleClass('highlighted-match');
+              $(lastCard).removeClass('highlighted-match');
+              $(lastLastCard).removeClass('highlighted-match');
             }, game.flipDelay);
 
             game.checkFinished();
@@ -477,12 +492,12 @@ var gameRedux = {
             game.debugConsoleLog('Not a Match: ' + lastCardValue + ' and ' + lastLastCardValue);
             game.scoring.misses += 1;
 
-            $(lastCard).toggleClass('not-matched-shake');
-            $(lastLastCard).toggleClass('not-matched-shake');
+            $(lastCard).addClass('not-matched-shake');
+            $(lastLastCard).addClass('not-matched-shake');
 
             setTimeout(function() { // turn the unmatched cards back over
-              $(lastCard).toggleClass('not-matched-shake').toggleClass('flip');
-              $(lastLastCard).toggleClass('not-matched-shake').toggleClass('flip');
+              $(lastCard).removeClass('not-matched-shake').removeClass('flip');
+              $(lastLastCard).removeClass('not-matched-shake').removeClass('flip');
             }.bind(this), game.flipDelay);
           }
         }
