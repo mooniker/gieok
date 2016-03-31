@@ -550,6 +550,7 @@ var gameRedux = {
   },
 
   updateStats: function() {
+    $(this.stopWatch).text(this.timer);
     $('#clicks').text(this.clickHistory.length);
     $('#misses').text(this.scoring.misses);
     $('#matches').text(this.scoring.matches);
@@ -557,7 +558,7 @@ var gameRedux = {
 
   updateStopWatch: function() {
     this.timer += 1;
-    $(this.stopWatch).text(this.timer);
+    this.updateStats();
     // this.debugConsoleLog('Timer: ' + this.timer);
   },
 
@@ -600,6 +601,9 @@ var gameRedux = {
   set: function() { // switch to mode 1 (game is ready to begin)
 
     this.mode = 1;
+    this.timer = 0;
+    clearInterval(this.timerId);
+    this.updateStats();
 
     this.dealTheCards();
 
@@ -615,10 +619,8 @@ var gameRedux = {
   },
 
   start: function() { // switch to mode 2, game is now in progress
-    this.timer = 0;
-    this.updateStopWatch();
+
     this.mode = 2;
-    clearInterval(this.timerId);
     this.timerId = setInterval(this.updateStopWatch.bind(this), 1000);
 
     $('#button').text('Give Up?');
