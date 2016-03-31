@@ -1,24 +1,25 @@
 # Overview
 
-_Project Gieok_ ("ghee uhk") is a [memory/concentration card game](https://en.wikipedia.org/wiki/Concentration_(game)) implemented in CSS and JavaScript/jQuery with semantic HTML as a two-day [assignment](https://github.com/ga-dc/project1) for students at [General Assembly](https://generalassemb.ly/washington-dc)'s [Web Development Immersive program](https://generalassemb.ly/education/web-development-immersive) in Washington, D.C.
+_Project Gieok_ ("ghee uhk") is a [memory/concentration card game](https://en.wikipedia.org/wiki/Concentration_(game)) implemented in CSS/SASS and JavaScript/jQuery with semantic HTML as a two-day [assignment](https://github.com/ga-dc/project1) for students at [General Assembly](https://generalassemb.ly/washington-dc)'s [Web Development Immersive program](https://generalassemb.ly/education/web-development-immersive) in Washington, D.C.
 
-All visual elements, graphics, and animations are handled in CSS and HTML. JavaScript administers the business logic, updates stats to the HTML, and toggles elements' classes on click events. No images are used (other than the external image used for the Github ribbon).
+All visual elements and animations are handled in CSS and HTML. JavaScript administers the business logic, updates stats to the HTML, and toggles elements' classes on click events. No images are used (other than the external image used for the Github ribbon).
 
 See the [demo hosted here on Github](http://mooniker.github.io/gieok/).
 
 ## CSS
 
-The CSS for the playing cards is lightly adapted from Jeff Yaus's [CSS Playing Cards](https://github.com/jyaus/css-playing-cards/) (v.2.0, released Feb. 2015). No images were used in this project, which is why the face cards appropriate chess-related symbols via HTML character codes. The flipping animation is also adapted from David DeSandro's [Intro to CSS 3D transforms](https://desandro.github.io/3dtransforms/docs/card-flip.html).
+The flipping animation is adapted from David DeSandro's [Intro to CSS 3D transforms](https://desandro.github.io/3dtransforms/docs/card-flip.html).
 
 ## Unimplemented Features
 
-- Provide feedback to show a correct pairing, such as a visual flow or highlighting.
+- ~~Provide feedback to show a correct pairing, such as a visual flow or highlighting.~~ **shaking/nodding animations implemented!**
 - Optionally show a replay of the most recent game.
 - Implement a mode in which the computer plays the game.
 - Implement other card sets and allow users to choose a set.
 - Improve the UI for the usual reasons (responsive, scalable, accessibility, etc).
 - Allow speed/interval changes for card flips.
 - Allow an option for a countdown timer.
+- Allow player to select from multiple card sets
 
 ## User Stories
 
