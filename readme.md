@@ -6,7 +6,7 @@ All visual elements and animations/transitions are handled in CSS and HTML. Java
 
 See the [demo hosted here on Github](http://mooniker.github.io/gieok/).
 
-# Cards
+## Cards
 
 The default card set are _hanja_ (Chinese logograms) that correspond to some basic elements, but the game can be modified to accept custom text cards in a JSON format.
 
