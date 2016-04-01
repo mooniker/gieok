@@ -270,18 +270,19 @@ var game = {
     } else this.scoring.won = false;
   },
 
-  hasMatchableCardsInClickHistory: function() {
-    // TODO search through click history, filter by cards that aren't solved and
-    // see if there are any potential matches
+  getHintFor: function(cardValue) {
 
-    return this.clickHistory.filter(function(card) {
+    var matches = $('.card-container:contains(\'' + cardValue + '\')');
+    return matches;
 
-    });
   },
 
   getHint: function(cardValue) {
 
-    // TODO if given a hint value, try for a match with that value first, then do regular searching
+    // if match for given card exists, give its pair instead of continuing
+    if (this.getHintFor(cardValue).length > 1)
+      return this.getHintFor(cardValue);
+
     var unsolvedCards = this.clickHistory.filter(function(card) {
       return !$(card).hasClass('solved');
     });
@@ -473,3 +474,7 @@ $(document).ready(function() {
   });
 
 });
+
+function hintFor(value) {
+  console.log(game.getHintFor(value));
+}
