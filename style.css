@@ -87,16 +87,13 @@ button {
   -moz-transform: rotateY(180deg);
   transform: rotateY(180deg);
   color: black;
-  background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center; }
+  background: white; }
 
 .card-face p {
-  display: block;
   margin: auto;
-  line-height: 6em;
-  font-size: 4.8em;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 400%;
   font-family: Tahoma, Geneva, sans-serif; }
 
 .animate-nod {
@@ -169,16 +166,20 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 /* score and stats board */
 #stats {
   position: absolute;
-  width: 8em;
+  width: 4em;
   top: 1em;
   right: 0;
   padding: 1em;
   cursor: default; }
 
 dl {
-  margin: auto; }
+  z-index: 1;
+  margin: auto;
+  width: 1em;
+  padding: 0; }
 
 dd, dt {
+  width: 2em;
   display: block;
   margin: auto; }
 
