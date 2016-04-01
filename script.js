@@ -299,17 +299,28 @@ var game = {
       });
       if (matchedCards.length > 1) {
         matchFound = true;
-        helpers.animateCard(matchedCards[0], this.nodClass);
-        helpers.animateCard(matchedCards[1], this.nodClass);
+        return matchedCards;
+        // helpers.animateCard(matchedCards[0], this.nodClass);
+        // helpers.animateCard(matchedCards[1], this.nodClass);
       }
     }
     if (!matchFound) { // if above for loop has been exhausted
       this.debugConsoleLog('No matches in memory, need to choose a random card.');
-      helpers.animateCard(this.button, this.shakeClass);
+      // helpers.animateCard(this.button, this.shakeClass);
     } else {
       this.debugConsoleLog('Found a match in memory');
     }
+    return null;
+  },
 
+  indicateHint: function(){
+    var hint = this.getHint();
+    if (hint) {
+      helpers.animateCard(hint[0], this.nodClass);
+      helpers.animateCard(hint[1], this.nodClass);
+    } else {
+      helpers.animateCard(this.button, this.shakeClass);
+    }
   },
 
   randomlyChooseUnflippedCard: function() {
@@ -419,7 +430,7 @@ $(document).ready(function() {
 
   $(document).on('keypress', function(e) {
     if (e.keyCode === 104) {
-      game.getHint();
+      game.indicateHint();
     }
   });
 
