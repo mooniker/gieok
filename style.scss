@@ -1,9 +1,25 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-$card-size-width: 3em * 2;
-$card-size-height: 3.4em * 2;
+$square-card-size: 3em * 2;
+$card-size-width: $square-card-size;
+$card-size-height: $square-card-size;
 $card-columns: 4;
 $cardBackColor: steelblue;
+
+/// Mixin to prefix several properties at once
+/// @author Hugo Giraudel
+/// @param {Map} $declarations - Declarations to prefix
+/// @param {List} $prefixes (()) - List of prefixes to print
+@mixin prefix($declarations, $prefixes: ()) {
+  @each $property, $value in $declarations {
+    @each $prefix in $prefixes {
+      #{'-' + $prefix + '-' + $property}: $value;
+    }
+
+    // Output standard non-prefixed declaration
+    #{$property}: $value;
+  }
+}
 
 body {
   background: green;
@@ -14,7 +30,9 @@ header, dl, button{
   font-family: 'Montserrat', Tahoma, Geneva, sans-serif;
   text-transform: uppercase;
   font-size: 160%;
-  border-radius: 0.3em;
+  @include prefix((
+    border-radius: 0.3em
+  ), webkit moz ms);
 }
 
 button {
@@ -50,26 +68,43 @@ button {
 
 /* flip toggle */
 .card-container.flip .flippable-card {
-	transform: rotateY(180deg);
+  // -webkit-transform: rotateY(180deg);
+  // -moz-transform: rotateY(180deg);
+  // -ms-transform: rotateY(180deg);
+	// transform: rotateY(180deg);
+  @include prefix((
+    transform: rotateY(180deg)
+  ), webkit moz ms);
 }
 
 .card-container, .card-back, .card-face {
 	width: $card-size-width;
 	height: $card-size-height;
-  border-radius: 10%;
+  // border-radius: 10%;
+  @include prefix((
+    border-radius: 10%
+  ), webkit moz ms);
 }
 
 /* flip speed goes here */
 .flippable-card {
-	transition: 0.6s;
-	transform-style: preserve-3d;
-
+  // transition: 0.6s;
+	// transform-style: preserve-3d;
+  @include prefix((
+    transition: 0.6s,
+  	transform-style: preserve-3d
+  ), webkit moz ms);
 	position: relative;
 }
 
 /* hide back of pane during swap */
 .card-back, .card-face {
-	backface-visibility: hidden;
+  // -webkit-backface-visibility: hidden;
+	// backface-visibility: hidden;
+
+  @include prefix((
+    backface-visibility: hidden
+  ), webkit);
 
 	position: absolute;
 	top: 0;
@@ -80,24 +115,40 @@ button {
 .card-back {
 	z-index: 2;
 	/* for firefox 31 */
-	transform: rotateY(0deg);
+  // -webkit-transform: rotateY(0deg);
+  // -moz-transform: rotateY(0deg);
+  // -ms-transform: rotateY(0deg);
+	// transform: rotateY(0deg);
+  @include prefix((
+    transform: rotateY(0deg)
+  ), webkit moz ms);
   background: $cardBackColor;
 }
 
 /* back, initially hidden pane */
 .card-face {
-	transform: rotateY(180deg);
+  // -webkit-transform: rotateY(180deg);
+  // -moz-transform: rotateY(180deg);
+  // -ms-transform: rotateY(180deg);
+	// transform: rotateY(180deg);
+  @include prefix((
+    transform: rotateY(180deg)
+  ), webkit moz);
   color: black;
   background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-face p {
   display: block;
   margin: auto;
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-  font-size: $card-size-width;
+  // display: table-cell;
+  // text-align: center;
+  // vertical-align: middle;
+  line-height: $card-size-height;
+  font-size: $card-size-height * 0.8;
   font-family: Tahoma, Geneva, sans-serif;
 }
 
@@ -110,27 +161,44 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 */
 
 .animate-shake {
-  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
+  // animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  // transform: translate3d(0, 0, 0);
+  // backface-visibility: hidden;
+  @include prefix((
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both,
+    transform: translate3d(0, 0, 0),
+    backface-visibility: hidden
+  ), webkit moz);
   perspective: 1000px;
 }
 
 @keyframes shake {
   10%, 90% {
     transform: translate3d(-1px, 0, 0);
+    @include prefix((
+      transform: translate3d(-1px, 0, 0)
+    ), webkit moz ms);
   }
 
   20%, 80% {
-    transform: translate3d(2px, 0, 0);
+    // transform: translate3d(2px, 0, 0);
+    @include prefix((
+      transform: translate3d(2px, 0, 0)
+    ), webkit moz ms);
   }
 
   30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
+    // transform: translate3d(-4px, 0, 0);
+    @include prefix((
+      transform: translate3d(-4px, 0, 0)
+    ), webkit moz ms);
   }
 
   40%, 60% {
-    transform: translate3d(4px, 0, 0);
+    // transform: translate3d(4px, 0, 0);
+    @include prefix((
+      transform: translate3d(4px, 0, 0)
+    ), webkit moz ms);
   }
 }
 
@@ -143,19 +211,31 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 
 @keyframes nod {
   10%, 90% {
-    transform: translate3d(0, -1px, 0);
+    // transform: translate3d(0, -1px, 0);
+    @include prefix((
+      transform: translate3d(0, -1px, 0)
+    ), webkit moz ms);
   }
 
   20%, 80% {
-    transform: translate3d(0, 2px, 0);
+    // transform: translate3d(0, 2px, 0);
+    @include prefix((
+      transform: translate3d(0, 2px, 0)
+    ), webkit moz ms);
   }
 
   30%, 50%, 70% {
-    transform: translate3d(0, -4px, 0);
+    // transform: translate3d(0, -4px, 0);
+    @include prefix((
+      transform: translate3d(0, -4px, 0)
+    ), webkit moz ms);
   }
 
   40%, 60% {
-    transform: translate3d(0, 4px, 0);
+    // transform: translate3d(0, 4px, 0);
+    @include prefix((
+      transform: translate3d(0, 4px, 0)
+    ), webkit moz ms);
   }
 }
 

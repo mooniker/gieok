@@ -7,6 +7,9 @@ header, dl, button {
   font-family: 'Montserrat', Tahoma, Geneva, sans-serif;
   text-transform: uppercase;
   font-size: 160%;
+  -webkit-border-radius: 0.3em;
+  -moz-border-radius: 0.3em;
+  -ms-border-radius: 0.3em;
   border-radius: 0.3em; }
 
 button {
@@ -35,21 +38,34 @@ button {
 
 /* flip toggle */
 .card-container.flip .flippable-card {
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
   transform: rotateY(180deg); }
 
 .card-container, .card-back, .card-face {
   width: 6em;
-  height: 6.8em;
+  height: 6em;
+  -webkit-border-radius: 10%;
+  -moz-border-radius: 10%;
+  -ms-border-radius: 10%;
   border-radius: 10%; }
 
 /* flip speed goes here */
 .flippable-card {
+  -webkit-transition: 0.6s;
+  -moz-transition: 0.6s;
+  -ms-transition: 0.6s;
   transition: 0.6s;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
   position: relative; }
 
 /* hide back of pane during swap */
 .card-back, .card-face {
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
   top: 0;
@@ -59,22 +75,28 @@ button {
 .card-back {
   z-index: 2;
   /* for firefox 31 */
+  -webkit-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+  -ms-transform: rotateY(0deg);
   transform: rotateY(0deg);
   background: steelblue; }
 
 /* back, initially hidden pane */
 .card-face {
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
   transform: rotateY(180deg);
   color: black;
-  background: white; }
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
 
 .card-face p {
   display: block;
   margin: auto;
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 6em;
+  line-height: 6em;
+  font-size: 4.8em;
   font-family: Tahoma, Geneva, sans-serif; }
 
 .animate-nod {
@@ -84,19 +106,38 @@ button {
 learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 */
 .animate-shake {
+  -webkit-animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  -moz-animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
   backface-visibility: hidden;
   perspective: 1000px; }
 
 @keyframes shake {
   10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+    -webkit-transform: translate3d(-1px, 0, 0);
+    -moz-transform: translate3d(-1px, 0, 0);
+    -ms-transform: translate3d(-1px, 0, 0);
     transform: translate3d(-1px, 0, 0); }
   20%, 80% {
+    -webkit-transform: translate3d(2px, 0, 0);
+    -moz-transform: translate3d(2px, 0, 0);
+    -ms-transform: translate3d(2px, 0, 0);
     transform: translate3d(2px, 0, 0); }
   30%, 50%, 70% {
+    -webkit-transform: translate3d(-4px, 0, 0);
+    -moz-transform: translate3d(-4px, 0, 0);
+    -ms-transform: translate3d(-4px, 0, 0);
     transform: translate3d(-4px, 0, 0); }
   40%, 60% {
+    -webkit-transform: translate3d(4px, 0, 0);
+    -moz-transform: translate3d(4px, 0, 0);
+    -ms-transform: translate3d(4px, 0, 0);
     transform: translate3d(4px, 0, 0); } }
 .animate-nod {
   animation: nod 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -106,12 +147,24 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 
 @keyframes nod {
   10%, 90% {
+    -webkit-transform: translate3d(0, -1px, 0);
+    -moz-transform: translate3d(0, -1px, 0);
+    -ms-transform: translate3d(0, -1px, 0);
     transform: translate3d(0, -1px, 0); }
   20%, 80% {
+    -webkit-transform: translate3d(0, 2px, 0);
+    -moz-transform: translate3d(0, 2px, 0);
+    -ms-transform: translate3d(0, 2px, 0);
     transform: translate3d(0, 2px, 0); }
   30%, 50%, 70% {
+    -webkit-transform: translate3d(0, -4px, 0);
+    -moz-transform: translate3d(0, -4px, 0);
+    -ms-transform: translate3d(0, -4px, 0);
     transform: translate3d(0, -4px, 0); }
   40%, 60% {
+    -webkit-transform: translate3d(0, 4px, 0);
+    -moz-transform: translate3d(0, 4px, 0);
+    -ms-transform: translate3d(0, 4px, 0);
     transform: translate3d(0, 4px, 0); } }
 /* score and stats board */
 #stats {
