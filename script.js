@@ -111,14 +111,6 @@ var helpers = {
           $(lastCard).addClass('solved');
           $(lastLastCard).addClass('solved');
 
-          // $(lastCard).addClass(game.nodClass);
-          // $(lastLastCard).addClass(game.nodClass);
-          //
-          // setTimeout(function() { // remove animate-nod class from elements
-          //   $(lastCard).removeClass(game.nodClass);
-          //   $(lastLastCard).removeClass(game.nodClass);
-          // }, game.flipDelay);
-
           this.animateCard(lastCard, game.nodClass);
           this.animateCard(lastLastCard, game.nodClass);
 
@@ -128,14 +120,6 @@ var helpers = {
 
           game.debugConsoleLog('Not a Match: ' + lastCardValue + ' and ' + lastLastCardValue);
           game.scoring.misses += 1;
-
-          // $(lastCard).addClass(game.shakeClass);
-          // $(lastLastCard).addClass(game.shakeClass);
-          //
-          // setTimeout(function() { // turn the unmatched cards back over
-          //   $(lastCard).removeClass(game.shakeClass).removeClass('flip');
-          //   $(lastLastCard).removeClass(game.shakeClass).removeClass('flip');
-          // }.bind(card), game.flipDelay);
 
           this.animateCard(lastCard, game.shakeClass, 'flip');
           this.animateCard(lastLastCard, game.shakeClass, 'flip');
@@ -287,7 +271,10 @@ var game = {
       return !$(card).hasClass('solved');
     });
 
-    // TODO if there are only two unsolved cards, they are obviously a match that should be hinted (as if they needed to be hinted)
+    // if there are only two unsolved cards, they are obviously a match that should be hinted (as if they needed to be hinted)
+    if (unsolvedCards.length === 2) {
+      return unsolvedCards;
+    }
 
     var uniqueCards = unsolvedCards.filter(function(item, pos) {
       return $(unsolvedCards).index(item) == pos;
@@ -303,13 +290,10 @@ var game = {
       if (matchedCards.length > 1) {
         matchFound = true;
         return matchedCards;
-        // helpers.animateCard(matchedCards[0], this.nodClass);
-        // helpers.animateCard(matchedCards[1], this.nodClass);
       }
     }
     if (!matchFound) { // if above for loop has been exhausted
       this.debugConsoleLog('No matches in memory, need to choose a random card.');
-      // helpers.animateCard(this.button, this.shakeClass);
     } else {
       this.debugConsoleLog('Found a match in memory');
     }
