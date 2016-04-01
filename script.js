@@ -280,6 +280,8 @@ var game = {
   },
 
   getHint: function(cardValue) {
+
+    // TODO if given a hint value, try for a match with that value first, then do regular searching
     var unsolvedCards = this.clickHistory.filter(function(card) {
       return !$(card).hasClass('solved');
     });
