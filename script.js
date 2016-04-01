@@ -171,7 +171,7 @@ var game = {
   shakeClass: 'animate-shake',
   nodClass: 'animate-nod',
 
-  debugMode: true, // toggle this to true for debugging UI elements and console messages
+  debugMode: false, // toggle this to true for debugging UI elements and console messages
 
   debugConsoleLog: function(msg) {
     if (this.debugMode) {
