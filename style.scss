@@ -11,7 +11,7 @@ body {
 }
 
 header, dl, button{
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', Tahoma, Geneva, sans-serif;
   text-transform: uppercase;
   font-size: 160%;
   border-radius: 0.3em;
@@ -98,6 +98,7 @@ button {
   text-align: center;
   vertical-align: middle;
   font-size: $card-size-width;
+  font-family: Tahoma, Geneva, sans-serif;
 }
 
 .animate-nod {
