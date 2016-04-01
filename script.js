@@ -171,7 +171,7 @@ var game = {
   shakeClass: 'animate-shake',
   nodClass: 'animate-nod',
 
-  debugMode: false, // toggle this to true for debugging UI elements and console messages
+  debugMode: true, // toggle this to true for debugging UI elements and console messages
 
   debugConsoleLog: function(msg) {
     if (this.debugMode) {
@@ -279,7 +279,7 @@ var game = {
     });
   },
 
-  getHint: function() {
+  getHint: function(cardValue) {
     var unsolvedCards = this.clickHistory.filter(function(card) {
       return !$(card).hasClass('solved');
     });
@@ -313,7 +313,7 @@ var game = {
     return null;
   },
 
-  indicateHint: function(){
+  indicateHint: function() {
     var hint = this.getHint();
     if (hint) {
       helpers.animateCard(hint[0], this.nodClass);
@@ -328,6 +328,23 @@ var game = {
     var numUnflippedCards = $('.card-container:not(.flip)').length;
     if ($('.card-container.solved').length > 0 && numUnflippedCards > 0) {
       var randomInt = Math.floor(Math.random() * (numUnflippedCards - 1));
+    }
+  },
+
+  flipCardsAutomatically: function() {
+    var hint = this.getHint();
+    if (hint) {
+      // check to see if first hint card is flipped
+      // if it isn't, flip it over and wait
+      // if it is, skip it
+      if (!$(hint[0]).hasClass('flip')) { // if this card is not flipped
+
+      }
+
+    } else {
+      // TODO
+      // flip random unflipped card
+
     }
   },
 
@@ -413,10 +430,14 @@ var game = {
     this.debugConsoleLog('Game now in progress. (Mode 2)');
   },
 
+  automate: function() { // switch
+    this.automated = true;
+
+  },
+
   stop: function() { // switch to mode 0, gameplay is suspended
     this.mode = 0;
     clearInterval(this.timerId);
-
     var buttonText = this.scoring.won ? 'Nice! Play Again?' : 'Try Again?';
     $(this.button).text(buttonText);
     this.debugConsoleLog(buttonText + ' - Game stopped. (Mode 0)');
@@ -428,9 +449,24 @@ $(document).ready(function() {
 
   game.init(hanjaCards);
 
-  $(document).on('keypress', function(e) {
-    if (e.keyCode === 104) {
-      game.indicateHint();
+  $(document).on('keydown', function(e) {
+
+    // e.preventDefault();
+
+    game.debugConsoleLog('KEYPRESS: ' + e.keyCode);
+
+    switch(e.keyCode) {
+      case 72: // h
+        game.indicateHint();
+        game.debugConsoleLog('HINT.');
+        break;
+      case 65: // A
+        game.automate();
+        game.debugConsoleLog('AUTOMATE.');
+        break;
+      default:
+        // do nothing
+        console.log(e.keyCode);
     }
   });
 
