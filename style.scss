@@ -54,28 +54,45 @@ button {
 	perspective: 1000;
   display: inline-block;
   padding: 0.2em;
+
+  /* keep mouse cursor normal when over flipped cards */
+  &.flip:hover {
+    cursor: default;
+  }
+
+  /* make mouse cursor a finger pointer when over a flippable card  */
+  &:not(.flip):hover {
+    cursor: pointer;
+  }
+
+  /* flip toggle */
+  &.flip .flippable-card {
+    @include prefix((
+      transform: rotateY(180deg)
+    ), webkit moz ms);
+  }
 }
 
-/* keep mouse cursor normal when over flipped cards */
-.card-container.flip:hover {
-  cursor: default;
-}
+// /* keep mouse cursor normal when over flipped cards */
+// .card-container.flip:hover {
+//   cursor: default;
+// }
 
-/* make mouse cursor a finger pointer when over a flippable card  */
-.card-container:not(.flip):hover {
-  cursor: pointer;
-}
+// /* make mouse cursor a finger pointer when over a flippable card  */
+// .card-container:not(.flip):hover {
+//   cursor: pointer;
+// }
 
-/* flip toggle */
-.card-container.flip .flippable-card {
-  // -webkit-transform: rotateY(180deg);
-  // -moz-transform: rotateY(180deg);
-  // -ms-transform: rotateY(180deg);
-	// transform: rotateY(180deg);
-  @include prefix((
-    transform: rotateY(180deg)
-  ), webkit moz ms);
-}
+// /* flip toggle */
+// .card-container.flip .flippable-card {
+//   // -webkit-transform: rotateY(180deg);
+//   // -moz-transform: rotateY(180deg);
+//   // -ms-transform: rotateY(180deg);
+// 	// transform: rotateY(180deg);
+//   @include prefix((
+//     transform: rotateY(180deg)
+//   ), webkit moz ms);
+// }
 
 .card-container, .card-back, .card-face {
 	width: $card-size-width;

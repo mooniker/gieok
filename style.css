@@ -26,22 +26,19 @@ button {
 .card-container {
   perspective: 1000;
   display: inline-block;
-  padding: 0.2em; }
-
-/* keep mouse cursor normal when over flipped cards */
-.card-container.flip:hover {
-  cursor: default; }
-
-/* make mouse cursor a finger pointer when over a flippable card  */
-.card-container:not(.flip):hover {
-  cursor: pointer; }
-
-/* flip toggle */
-.card-container.flip .flippable-card {
-  -webkit-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
-  transform: rotateY(180deg); }
+  padding: 0.2em;
+  /* keep mouse cursor normal when over flipped cards */
+  /* make mouse cursor a finger pointer when over a flippable card  */
+  /* flip toggle */ }
+  .card-container.flip:hover {
+    cursor: default; }
+  .card-container:not(.flip):hover {
+    cursor: pointer; }
+  .card-container.flip .flippable-card {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+    transform: rotateY(180deg); }
 
 .card-container, .card-back, .card-face {
   width: 6em;
