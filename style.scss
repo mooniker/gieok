@@ -40,17 +40,22 @@ button {
 }
 
 #button { // TODO add transition on button changes
+
   transition: all 2s;  // but how?
   // transform: rotate(360deg);
+
 }
 
 #table {
+
   width: $card-size-width * $card-columns + $card-size-width / 2;
   margin: ($card-size-width / 2) auto;
+
 }
 
 /* entire container, keeps perspective */
 .card-container {
+
 	perspective: 1000;
   display: inline-block;
   padding: 0.2em;
@@ -71,27 +76,35 @@ button {
       transform: rotateY(180deg)
     ), webkit moz ms);
   }
+
 }
 
 .card-container, .card-back, .card-face {
+
 	width: $card-size-width;
 	height: $card-size-height;
+
   @include prefix((
     border-radius: 10%
   ), webkit moz ms);
+
 }
 
 /* flip speed goes here */
 .flippable-card {
+
   @include prefix((
     transition: 0.6s,
   	transform-style: preserve-3d
   ), webkit moz ms);
+
 	position: relative;
+
 }
 
 /* hide back of pane during swap */
 .card-back, .card-face {
+
   @include prefix((
     backface-visibility: hidden
   ), webkit);
@@ -99,22 +112,29 @@ button {
 	position: absolute;
 	top: 0;
 	left: 0;
+
 }
 
 /* front pane, placed above back */
 .card-back {
+
 	z-index: 2;
+
   @include prefix((
     transform: rotateY(0deg)
   ), webkit moz ms);
+
   background: $cardBackColor;
+
 }
 
 /* back, initially hidden pane */
 .card-face {
+
   @include prefix((
     transform: rotateY(180deg)
   ), webkit moz);
+
   color: black;
   background: white;
 
@@ -126,78 +146,6 @@ button {
     font-family: Tahoma, Geneva, sans-serif;
   }
 
-}
-
-/* shake failed matches
-learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
-*/
-
-.animate-shake {
-  @include prefix((
-    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both,
-    transform: translate3d(0, 0, 0),
-    backface-visibility: hidden
-  ), webkit moz);
-  perspective: 1000px;
-}
-
-@keyframes shake {
-  10%, 90% {
-    @include prefix((
-      transform: translate3d(-1px, 0, 0)
-    ), webkit moz ms);
-  }
-
-  20%, 80% {
-    @include prefix((
-      transform: translate3d(2px, 0, 0)
-    ), webkit moz ms);
-  }
-
-  30%, 50%, 70% {
-    @include prefix((
-      transform: translate3d(-4px, 0, 0)
-    ), webkit moz ms);
-  }
-
-  40%, 60% {
-    @include prefix((
-      transform: translate3d(4px, 0, 0)
-    ), webkit moz ms);
-  }
-}
-
-.animate-nod {
-  animation: nod 0.82s cubic-bezier(.36,.07,.19,.97) both;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
-
-@keyframes nod {
-  10%, 90% {
-    @include prefix((
-      transform: translate3d(0, -1px, 0)
-    ), webkit moz ms);
-  }
-
-  20%, 80% {
-    @include prefix((
-      transform: translate3d(0, 2px, 0)
-    ), webkit moz ms);
-  }
-
-  30%, 50%, 70% {
-    @include prefix((
-      transform: translate3d(0, -4px, 0)
-    ), webkit moz ms);
-  }
-
-  40%, 60% {
-    @include prefix((
-      transform: translate3d(0, 4px, 0)
-    ), webkit moz ms);
-  }
 }
 
 /* score and stats board */
@@ -240,3 +188,5 @@ p.hint {
 .hint:hover {
   color: white;
 }
+
+@import 'animations';

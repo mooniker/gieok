@@ -88,6 +88,41 @@ button {
     font-size: 400%;
     font-family: Tahoma, Geneva, sans-serif; }
 
+/* score and stats board */
+#stats {
+  position: absolute;
+  width: 4em;
+  top: 1em;
+  right: 0;
+  padding: 1em;
+  cursor: default; }
+
+dl {
+  z-index: 1;
+  margin: auto;
+  width: 1em;
+  padding: 0; }
+
+dd, dt {
+  width: 2em;
+  display: block;
+  margin: auto; }
+
+dd {
+  font-size: 240%;
+  padding-bottom: .5em; }
+
+dt {
+  text-transform: lowercase;
+  font-size: 60%; }
+
+/* for debugMode only */
+p.hint {
+  color: steelblue; }
+
+.hint:hover {
+  color: white; }
+
 /* shake failed matches
 learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 */
@@ -151,39 +186,5 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
     -moz-transform: translate3d(0, 4px, 0);
     -ms-transform: translate3d(0, 4px, 0);
     transform: translate3d(0, 4px, 0); } }
-/* score and stats board */
-#stats {
-  position: absolute;
-  width: 4em;
-  top: 1em;
-  right: 0;
-  padding: 1em;
-  cursor: default; }
-
-dl {
-  z-index: 1;
-  margin: auto;
-  width: 1em;
-  padding: 0; }
-
-dd, dt {
-  width: 2em;
-  display: block;
-  margin: auto; }
-
-dd {
-  font-size: 240%;
-  padding-bottom: .5em; }
-
-dt {
-  text-transform: lowercase;
-  font-size: 60%; }
-
-/* for debugMode only */
-p.hint {
-  color: steelblue; }
-
-.hint:hover {
-  color: white; }
 
 /*# sourceMappingURL=style.css.map */
