@@ -26,10 +26,7 @@ button {
 .card-container {
   perspective: 1000;
   display: inline-block;
-  padding: 0.2em;
-  /* keep mouse cursor normal when over flipped cards */
-  /* make mouse cursor a finger pointer when over a flippable card  */
-  /* flip toggle */ }
+  padding: 0.2em; }
   .card-container.flip:hover {
     cursor: default; }
   .card-container:not(.flip):hover {
@@ -71,7 +68,6 @@ button {
 /* front pane, placed above back */
 .card-back {
   z-index: 2;
-  /* for firefox 31 */
   -webkit-transform: rotateY(0deg);
   -moz-transform: rotateY(0deg);
   -ms-transform: rotateY(0deg);
@@ -85,16 +81,12 @@ button {
   transform: rotateY(180deg);
   color: black;
   background: white; }
-
-.card-face p {
-  margin: auto;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 400%;
-  font-family: Tahoma, Geneva, sans-serif; }
-
-.animate-nod {
-  box-shadow: 1em yellow; }
+  .card-face p {
+    margin: auto;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 400%;
+    font-family: Tahoma, Geneva, sans-serif; }
 
 /* shake failed matches
 learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
@@ -113,7 +105,6 @@ learned from: https://css-tricks.com/snippets/css/shake-css-keyframe-animation/
 
 @keyframes shake {
   10%, 90% {
-    transform: translate3d(-1px, 0, 0);
     -webkit-transform: translate3d(-1px, 0, 0);
     -moz-transform: translate3d(-1px, 0, 0);
     -ms-transform: translate3d(-1px, 0, 0);
